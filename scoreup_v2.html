@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ScoreUp – Free SAT Prep</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f9f8f5;--surface:#fff;--border:#e8e4dc;--border-dark:#d0cbc0;--text:#1a1916;--text-muted:#6b6760;--text-hint:#a09c96;--accent:#2d6ef5;--accent-bg:#eef3ff;--success:#1a7a4a;--success-bg:#edf7f1;--warning:#9a6000;--warning-bg:#fff8eb;--danger:#c0392b;--danger-bg:#fef0ee;--purple:#5b35d5;--purple-bg:#f0ecff;--radius:10px;--radius-lg:14px;--shadow:0 1px 3px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.05);}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:15px;}
+
+/* === AUTH === */
+.auth-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:999;overflow-y:auto;padding:20px;}
+.auth-box{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:40px 36px;width:440px;max-width:100%;box-shadow:0 8px 32px rgba(0,0,0,.08);}
+.auth-logo{font-family:'DM Serif Display',serif;font-size:28px;color:var(--accent);margin-bottom:4px;}
+.auth-logo span{color:var(--text);}
+.auth-sub{font-size:13px;color:var(--text-muted);margin-bottom:24px;}
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:20px;}
+.auth-tab{padding:9px;border:1.5px solid var(--border);border-radius:var(--radius);cursor:pointer;text-align:center;font-size:14px;font-weight:500;transition:all .15s;background:var(--surface);}
+.auth-tab.active{border-color:var(--accent);background:var(--accent-bg);color:var(--accent);}
+.role-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px;}
+.role-tab{padding:10px;border:1.5px solid var(--border);border-radius:var(--radius);cursor:pointer;text-align:center;font-size:14px;font-weight:500;transition:all .15s;background:var(--surface);}
+.role-tab.active{border-color:var(--accent);background:var(--accent-bg);color:var(--accent);}
+.input-group{margin-bottom:14px;}
+.input-group label{display:block;font-size:12px;font-weight:500;color:var(--text-muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;}
+.input-group input,.input-group select{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:14px;background:var(--bg);color:var(--text);outline:none;transition:border .15s;}
+.input-group input:focus,.input-group select:focus{border-color:var(--accent);}
+.google-btn{width:100%;padding:11px;border:1.5px solid var(--border);border-radius:var(--radius);background:var(--surface);font-family:inherit;font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .15s;margin-bottom:14px;}
+.google-btn:hover{border-color:var(--accent);background:var(--accent-bg);}
+.or-divider{display:flex;align-items:center;gap:12px;margin:14px 0;color:var(--text-muted);font-size:12px;}
+.or-divider::before,.or-divider::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* === NAV === */
+nav{background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:56px;position:sticky;top:0;z-index:100;}
+.logo{font-family:'DM Serif Display',serif;font-size:22px;color:var(--accent);letter-spacing:-.5px;}
+.logo span{color:var(--text);}
+.nav-tabs{display:flex;gap:4px;}
+.nav-tab{padding:6px 14px;border-radius:7px;cursor:pointer;font-size:14px;color:var(--text-muted);border:none;background:none;font-family:inherit;transition:all .15s;}
+.nav-tab:hover{background:var(--bg);color:var(--text);}
+.nav-tab.active{background:var(--accent-bg);color:var(--accent);font-weight:500;}
+.nav-right{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-muted);}
+.avatar{width:32px;height:32px;border-radius:50%;background:var(--accent-bg);color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;cursor:pointer;}
+.role-badge{font-size:11px;padding:2px 8px;border-radius:99px;font-weight:500;}
+.role-student{background:var(--accent-bg);color:var(--accent);}
+.role-parent{background:var(--purple-bg);color:var(--purple);}
+
+/* === LAYOUT === */
+.page{display:none;}.page.active{display:block;}
+.container{max-width:1100px;margin:0 auto;padding:28px 24px;}
+.two-col{display:grid;grid-template-columns:1fr 320px;gap:20px;}
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.four-col{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;box-shadow:var(--shadow);}
+.card-sm{padding:14px 16px;}
+.card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+.card-title{font-size:13px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;}
+.metric{text-align:center;padding:18px 14px;}
+.metric-val{font-size:32px;font-weight:600;font-variant-numeric:tabular-nums;}
+.metric-label{font-size:12px;color:var(--text-muted);margin-top:4px;}
+.metric-delta{font-size:12px;margin-top:4px;}
+.delta-up{color:var(--success);}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:99px;font-size:12px;font-weight:500;}
+.badge-blue{background:var(--accent-bg);color:var(--accent);}
+.badge-green{background:var(--success-bg);color:var(--success);}
+.badge-orange{background:var(--warning-bg);color:var(--warning);}
+.badge-red{background:var(--danger-bg);color:var(--danger);}
+.badge-purple{background:var(--purple-bg);color:var(--purple);}
+.progress-bar{background:var(--border);border-radius:99px;height:6px;overflow:hidden;}
+.progress-fill{height:100%;border-radius:99px;transition:width .5s ease;}
+.fill-blue{background:var(--accent);}.fill-green{background:#22c55e;}.fill-orange{background:#f59e0b;}.fill-red{background:#ef4444;}
+.section-title{font-family:'DM Serif Display',serif;font-size:20px;margin-bottom:4px;}
+.section-sub{font-size:14px;color:var(--text-muted);margin-bottom:20px;}
+
+/* === CALENDAR === */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+.cal-header{font-size:11px;font-weight:600;text-align:center;color:var(--text-muted);padding:4px 0;text-transform:uppercase;letter-spacing:.05em;}
+.cal-day{aspect-ratio:1;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:13px;cursor:pointer;position:relative;transition:background .1s;}
+.cal-day:hover{background:var(--bg);}
+.cal-day.today{background:var(--accent);color:white;font-weight:600;}
+.cal-day.other-month{color:var(--text-hint);}
+.cal-day.focus-day{background:var(--warning-bg);border:1px solid #fbbf24;}
+.cal-day.test-day{background:var(--danger-bg);border:1px solid #fca5a5;}
+.cal-day.sat-deadline{background:#dc2626;color:white;border:2px solid #991b1b;font-weight:700;}
+.cal-day.sat-deadline:hover{background:#b91c1c;}
+.cal-day.study-day{background:var(--success-bg);border:1px solid #86efac;}
+.cal-day .task-dot{width:5px;height:5px;border-radius:50%;background:var(--accent);position:absolute;bottom:3px;}
+.cal-day.today .task-dot{background:white;}
+
+/* === TASK TRACKER SIDEBAR === */
+.task-tracker{display:flex;flex-direction:column;gap:8px;}
+.task-tracker-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .15s;background:var(--surface);}
+.task-tracker-item.done{opacity:.6;background:var(--success-bg);border-color:#86efac;}
+.task-tracker-item .task-check{width:18px;height:18px;border-radius:4px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;}
+.task-tracker-item.done .task-check{background:var(--success);border-color:var(--success);color:white;}
+.task-tracker-item.done .task-text{text-decoration:line-through;color:var(--text-muted);}
+.task-text{font-size:13px;font-weight:500;flex:1;}
+.task-due{font-size:11px;color:var(--text-muted);}
+
+/* === MODALS === */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:500;display:flex;align-items:center;justify-content:center;}
+.modal{background:var(--surface);border-radius:var(--radius-lg);padding:28px;width:480px;max-width:95vw;box-shadow:0 12px 40px rgba(0,0,0,.15);max-height:85vh;overflow-y:auto;}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+.modal-title{font-size:16px;font-weight:600;}
+.modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-muted);line-height:1;}
+.task-item{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px;cursor:pointer;transition:all .15s;}
+.task-item:hover{transform:translateX(2px);}
+.task-type-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+
+/* === PRACTICE TEST === */
+.test-hero{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);border-radius:var(--radius-lg);padding:36px 32px;color:white;position:relative;overflow:hidden;margin-bottom:20px;}
+.test-hero h2{font-family:'DM Serif Display',serif;font-size:28px;margin-bottom:8px;}
+.test-hero p{color:rgba(255,255,255,.65);font-size:14px;}
+.test-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.test-card{cursor:pointer;transition:transform .15s,box-shadow .15s;}
+.test-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.1);}
+.test-type{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;}
+.test-name{font-size:15px;font-weight:600;margin-bottom:10px;}
+.test-meta{display:flex;gap:12px;font-size:12px;color:var(--text-muted);}
+.section-info-box{border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px;}
+.section-rule{font-size:13px;color:var(--text-muted);margin-bottom:4px;display:flex;gap:6px;}
+
+/* === ACTIVE TEST UI === */
+.test-topbar{display:flex;align-items:center;justify-content:space-between;background:var(--surface);border-bottom:1px solid var(--border);padding:12px 24px;position:sticky;top:56px;z-index:90;}
+.timer-display{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--text);min-width:80px;text-align:center;}
+.timer-display.warn{color:var(--warning);}
+.timer-display.danger{color:var(--danger);}
+.module-label{font-size:13px;font-weight:600;padding:4px 12px;border-radius:99px;}
+.q-progress{height:4px;background:var(--border);border-radius:99px;margin-bottom:24px;}
+.q-progress-fill{height:100%;background:var(--accent);border-radius:99px;transition:width .3s;}
+.q-text{font-size:16px;line-height:1.7;margin-bottom:24px;white-space:pre-line;}
+.q-passage{background:var(--bg);border-left:3px solid var(--border-dark);padding:14px 16px;border-radius:0 8px 8px 0;margin-bottom:20px;font-size:14px;line-height:1.8;color:var(--text-muted);}
+.answer-opts{display:flex;flex-direction:column;gap:10px;}
+.answer-opt{padding:14px 16px;border:1.5px solid var(--border);border-radius:var(--radius);cursor:pointer;font-size:14px;display:flex;gap:12px;align-items:center;transition:all .15s;background:var(--surface);}
+.answer-opt:hover{border-color:var(--accent);background:var(--accent-bg);}
+.answer-opt.selected{border-color:var(--accent);background:var(--accent-bg);}
+.opt-letter{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0;}
+.answer-opt.selected .opt-letter{background:var(--accent);border-color:var(--accent);color:white;}
+.spr-input{width:100%;padding:12px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:15px;font-family:inherit;margin-top:8px;outline:none;transition:border .15s;}
+.spr-input:focus{border-color:var(--accent);}
+.q-actions{display:flex;justify-content:space-between;align-items:center;margin-top:24px;flex-wrap:wrap;gap:10px;}
+.btn{padding:10px 20px;border-radius:var(--radius);border:1.5px solid var(--border);background:var(--surface);color:var(--text);font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .15s;}
+.btn:hover{background:var(--bg);}
+.btn:disabled{opacity:.4;cursor:default;}
+.btn-primary{background:var(--accent);color:white;border-color:var(--accent);}
+.btn-primary:hover{background:#1f5ce0;}
+.btn-danger{background:var(--danger);color:white;border-color:var(--danger);}
+.btn-calc{background:var(--purple-bg);color:var(--purple);border-color:#c4b5fd;display:flex;align-items:center;gap:6px;}
+.btn-calc:hover{background:var(--purple);color:white;}
+
+/* === CALC PANEL === */
+.calc-panel{position:fixed;bottom:20px;right:20px;z-index:400;border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.2);border:1px solid var(--border);display:none;}
+.calc-panel.open{display:block;}
+.calc-header{background:var(--surface);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);}
+
+/* === RESULTS === */
+.score-ring{width:120px;height:120px;margin:0 auto 20px;position:relative;}
+.score-ring svg{transform:rotate(-90deg);}
+.score-num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.breakdown-row{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.breakdown-label{font-size:13px;width:160px;flex-shrink:0;}
+.breakdown-val{font-size:13px;font-weight:600;min-width:40px;text-align:right;}
+
+/* === PARENT TRACKER === */
+.student-card{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);cursor:pointer;}
+.student-card:last-child{border-bottom:none;}
+.student-card:hover .sname{color:var(--accent);}
+.savatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px;flex-shrink:0;}
+.timeline-item{display:flex;gap:12px;margin-bottom:14px;}
+.timeline-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.alert{padding:10px 14px;border-radius:var(--radius);font-size:13px;margin-bottom:10px;display:flex;gap:8px;align-items:flex-start;}
+.alert-warning{background:var(--warning-bg);color:var(--warning);border:1px solid #fde68a;}
+.alert-success{background:var(--success-bg);color:var(--success);border:1px solid #86efac;}
+.alert-info{background:var(--accent-bg);color:var(--accent);border:1px solid #bfdbfe;}
+.notif{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);align-items:flex-start;}
+.notif:last-child{border-bottom:none;}
+.notif-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.bar-chart{display:flex;gap:8px;align-items:flex-end;height:100px;margin:12px 0;}
+.bar-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.bar{width:100%;border-radius:4px 4px 0 0;min-height:4px;}
+.topic-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);}
+.topic-row:last-child{border-bottom:none;}
+.topic-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+
+/* === CONGRATS MODAL === */
+.congrats-modal{background:linear-gradient(135deg,#1a1a2e,#16213e);color:white;border-radius:var(--radius-lg);padding:40px;width:500px;max-width:95vw;text-align:center;box-shadow:0 12px 40px rgba(0,0,0,.4);}
+.congrats-modal h2{font-family:'DM Serif Display',serif;font-size:32px;margin-bottom:12px;}
+.confetti{font-size:48px;display:block;margin-bottom:16px;animation:bounce 1s infinite alternate;}
+@keyframes bounce{to{transform:translateY(-10px)}}
+
+/* === Q NAV GRID === */
+.q-nav-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin:12px 0;}
+.q-nav-btn{aspect-ratio:1;border-radius:6px;border:none;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+
+/* === BREAK SCREEN === */
+.break-screen{background:linear-gradient(135deg,#1a1a2e,#16213e);border-radius:var(--radius-lg);padding:60px 40px;color:white;text-align:center;margin:40px auto;max-width:500px;}
+.break-timer{font-size:64px;font-weight:700;font-variant-numeric:tabular-nums;margin:24px 0;}
+
+::-webkit-scrollbar{width:6px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--border-dark);border-radius:99px;}
+@media(max-width:768px){.two-col{grid-template-columns:1fr;}.three-col{grid-template-columns:1fr 1fr;}.four-col{grid-template-columns:1fr 1fr;}.test-cards{grid-template-columns:1fr;}.cal-grid{gap:2px;}.cal-day{font-size:11px;}}
+</style>
+</head>
+<body>
+
+<!-- ===================== AUTH SCREEN ===================== -->
+<div class="auth-screen" id="auth-screen">
+  <div class="auth-box">
+    <div class="auth-logo">Score<span>Up</span></div>
+    <div class="auth-sub">Free SAT prep for everyone.</div>
+
+    <!-- Mode: signin / signup -->
+    <div class="auth-tabs" style="margin-bottom:20px;">
+      <div class="auth-tab active" id="tab-signin" onclick="switchAuthMode('signin')">Sign In</div>
+      <div class="auth-tab" id="tab-signup" onclick="switchAuthMode('signup')">Create Account</div>
+    </div>
+
+    <!-- Role selector -->
+    <div class="role-tabs" id="role-tabs">
+      <div class="role-tab active" id="role-student" onclick="selectRole('student')">🎓 Student</div>
+      <div class="role-tab" id="role-parent" onclick="selectRole('parent')">👨‍👩‍👧 Parent / Tutor</div>
+    </div>
+
+    <!-- Google btn -->
+    <button class="google-btn" onclick="googleAuth()">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Continue with Google
+    </button>
+    <div class="or-divider">or</div>
+
+    <!-- SIGN IN FORM -->
+    <div id="form-signin">
+      <div class="input-group"><label>Email</label><input type="email" id="si-email" placeholder="you@example.com"></div>
+      <div class="input-group"><label>Password</label><input type="password" id="si-pass" placeholder="Password"></div>
+      <button class="btn btn-primary" style="width:100%;margin-top:4px;" onclick="doSignIn()">Sign In</button>
+      <div style="text-align:center;margin-top:12px;font-size:12px;color:var(--text-muted);">
+        Demo student: <strong>alex@scoreup.com</strong> / <strong>student123</strong><br>
+        Demo parent: <strong>parent@scoreup.com</strong> / <strong>parent123</strong>
+      </div>
+    </div>
+
+    <!-- SIGN UP FORM -->
+    <div id="form-signup" style="display:none;">
+      <div class="input-group"><label>Full Name</label><input type="text" id="su-name" placeholder="Your full name"></div>
+      <div class="input-group"><label>Email</label><input type="email" id="su-email" placeholder="you@example.com"></div>
+      <div class="input-group"><label>Password</label><input type="password" id="su-pass" placeholder="Create a password"></div>
+      <!-- Student-only fields -->
+      <div id="student-fields">
+        <div class="input-group">
+          <label>Grade / School Year</label>
+          <select id="su-grade">
+            <option value="">Select grade</option>
+            <option>9th Grade</option><option>10th Grade</option>
+            <option>11th Grade</option><option>12th Grade</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label>📅 Date of Your Next SAT</label>
+          <input type="date" id="su-sat-date" min="2025-01-01">
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">We'll build a study plan around this date.</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;" onclick="toggleCalAdd()" id="cal-add-row">
+          <input type="checkbox" id="su-add-cal" style="width:16px;height:16px;" onclick="event.stopPropagation()">
+          <span style="font-size:13px;font-weight:500;">📆 Add SAT date to my calendar</span>
+        </div>
+      </div>
+      <!-- Parent-only fields -->
+      <div id="parent-fields" style="display:none;">
+        <div class="input-group">
+          <label>Student's Email (to connect)</label>
+          <input type="email" id="su-student-email" placeholder="student@example.com">
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Enter the email your student used to sign up.</div>
+        </div>
+      </div>
+      <button class="btn btn-primary" style="width:100%;margin-top:4px;" onclick="doSignUp()">Create Account →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== CALCULATOR ===================== -->
+<div class="calc-panel" id="calc-panel">
+  <div class="calc-header">
+    <span style="font-size:13px;font-weight:500;">🧮 Desmos Graphing Calculator</span>
+    <button onclick="toggleCalc()" style="background:none;border:none;cursor:pointer;font-size:18px;color:var(--text-muted);">✕</button>
+  </div>
+  <iframe src="https://www.desmos.com/scientific" width="440" height="440" style="border:none;display:block;"></iframe>
+</div>
+
+<!-- ===================== NAV ===================== -->
+<nav id="main-nav" style="display:none;">
+  <div class="logo">Score<span>Up</span></div>
+  <div class="nav-tabs" id="nav-tabs"></div>
+  <div class="nav-right">
+    <span class="role-badge" id="role-badge"></span>
+    <span id="nav-username"></span>
+    <div class="avatar" id="nav-avatar" title="Click to sign out" onclick="doLogout()">AJ</div>
+  </div>
+</nav>
+
+<!-- ===================== MODALS ===================== -->
+<!-- Task / Day modal -->
+<div class="modal-overlay" id="task-modal" style="display:none;" onclick="closeModalOutside(event)">
+  <div class="modal" id="task-modal-inner">
+    <div class="modal-header">
+      <div class="modal-title" id="task-modal-date"></div>
+      <button class="modal-close" onclick="document.getElementById('task-modal').style.display='none'">✕</button>
+    </div>
+    <div id="task-modal-body"></div>
+  </div>
+</div>
+
+<!-- Congrats modal (SAT day) -->
+<div class="modal-overlay" id="congrats-modal" style="display:none;">
+  <div class="congrats-modal">
+    <span class="confetti">🎉</span>
+    <h2>Congratulations!</h2>
+    <p style="font-size:16px;color:rgba(255,255,255,.8);line-height:1.6;margin-bottom:24px;">
+      Today is your SAT! You've worked incredibly hard for this moment.<br>
+      Trust your preparation, stay calm, and show what you've got! 💪
+    </p>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+      <button class="btn btn-primary" onclick="document.getElementById('congrats-modal').style.display='none'">Let's Go! 🚀</button>
+    </div>
+  </div>
+</div>
+
+<!-- Reference Sheet modal -->
+<div class="modal-overlay" id="ref-modal" style="display:none;" onclick="if(event.target===this)this.style.display='none'">
+  <div class="modal" style="width:600px;">
+    <div class="modal-header">
+      <div class="modal-title">📐 SAT Math Reference Sheet</div>
+      <button class="modal-close" onclick="document.getElementById('ref-modal').style.display='none'">✕</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;font-size:13px;">
+      <div style="padding:12px;background:var(--bg);border-radius:var(--radius);"><strong>Circle</strong><br>A = πr² &nbsp;|&nbsp; C = 2πr</div>
+      <div style="padding:12px;background:var(--bg);border-radius:var(--radius);"><strong>Rectangle</strong><br>A = lw &nbsp;|&nbsp; P = 2l + 2w</div>
+      <div style="padding:12px;background:var(--bg);border-radius:var(--radius);"><strong>Triangle</strong><br>A = ½bh</div>
+      <div style="padding:12px;background:var(--bg);border-radius:var(--radius);"><strong>Pythagorean Theorem</strong><br>a² + b² = c²</div>
+      <div style="padding:12px;background:var(--bg);border-radius:var(--radius);"><strong>Special Right Triangles</strong><br>30-60-90: sides x, x√3, 2x<br>45-45-90: sides x, x, x√2</div>
+      <div style="padding:12px;background:var(--bg);border-radius:var(--radius);"><strong>Sphere</strong><br>V = (4/3)πr³ &nbsp;|&nbsp; A = 4πr²</div>
+      <div style="padding:12px;background:var(--bg);border-radius:var(--radius);"><strong>Cone</strong><br>V = (1/3)πr²h</div>
+      <div style="padding:12px;background:var(--bg);border-radius:var(--radius);"><strong>Cylinder</strong><br>V = πr²h</div>
+      <div style="padding:12px;background:var(--bg);border-radius:var(--radius);"><strong>Rectangular Prism</strong><br>V = lwh</div>
+      <div style="padding:12px;background:var(--bg);border-radius:var(--radius);"><strong>Pyramid</strong><br>V = (1/3)lwh</div>
+    </div>
+    <div style="margin-top:12px;padding:10px;background:var(--accent-bg);border-radius:var(--radius);font-size:12px;color:var(--accent);">
+      ℹ️ The number of degrees in a circle is 360. The number of radians in a circle is 2π.
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PAGES ===================== -->
+<div id="page-dashboard" class="page"></div>
+<div id="page-practice" class="page"></div>
+<div id="page-calendar" class="page"></div>
+<div id="page-progress" class="page"></div>
+<div id="page-tracker" class="page"></div>
+
+<script>
+// ========================
+// DATA
+// ========================
+const USERS={
+  'alex@scoreup.com':{pass:'student123',role:'student',name:'Alex Johnson',initials:'AJ',satDate:'2026-05-03',grade:'11th Grade'},
+  'maya@scoreup.com':{pass:'student123',role:'student',name:'Maya Rodriguez',initials:'MR',satDate:'2026-06-07',grade:'11th Grade'},
+  'chris@scoreup.com':{pass:'student123',role:'student',name:'Chris Lee',initials:'CL',satDate:'2026-08-22',grade:'12th Grade'},
+  'parent@scoreup.com':{pass:'parent123',role:'parent',name:'Parent / Tutor',initials:'PT',linkedStudent:'alex@scoreup.com'},
+};
+const STUDENTS=[
+  {id:1,email:'alex@scoreup.com',name:'Alex Johnson',initials:'AJ',color:'#dbeafe',tc:'#1d4ed8',target:1480,current:1320,change:40,streak:34,tests:12,comp:91,subj:{math:74,reading:68,writing:72},weak:['Algebra: Quadratics','Reading: Main Idea'],hist:[1180,1210,1240,1260,1280,1300,1320]},
+  {id:2,email:'maya@scoreup.com',name:'Maya Rodriguez',initials:'MR',color:'#fce7f3',tc:'#be185d',target:1400,current:1260,change:60,streak:8,tests:9,comp:62,subj:{math:61,reading:75,writing:68},weak:['Systems of Equations','Transitions'],hist:[1100,1120,1160,1180,1200,1220,1260]},
+  {id:3,email:'chris@scoreup.com',name:'Chris Lee',initials:'CL',color:'#d1fae5',tc:'#065f46',target:1500,current:1400,change:105,streak:52,tests:18,comp:96,subj:{math:88,reading:82,writing:85},weak:['Advanced Geometry','Rhetoric Analysis'],hist:[1200,1240,1280,1320,1350,1380,1400]},
+];
+
+const BASE_CAL_TASKS={
+  3:[{type:'focus',title:'Algebra: Quadratics',dur:'45 min',icon:'📐',section:'math'},{type:'focus',title:'Reading: Main Idea',dur:'30 min',icon:'📖',section:'rw'}],
+  5:[{type:'focus',title:'Writing: Punctuation',dur:'30 min',icon:'✍️',section:'grammar'}],
+  7:[{type:'review',title:'Full Math Review',dur:'60 min',icon:'📊',section:'math'}],
+  8:[{type:'focus',title:'Algebra: Quadratics',dur:'45 min',icon:'📐',section:'math'}],
+  10:[{type:'focus',title:'Vocabulary in Context',dur:'25 min',icon:'🔤',section:'rw'}],
+  12:[{type:'focus',title:'Reading: Evidence',dur:'40 min',icon:'📖',section:'rw'}],
+  14:[{type:'test',title:'Full Practice Test #5',dur:'2h 14m',icon:'📋',section:'full'}],
+  15:[{type:'focus',title:'Quadratics Deep Dive',dur:'45 min',icon:'📐',section:'math'}],
+  17:[{type:'focus',title:'Grammar: Punctuation',dur:'30 min',icon:'✍️',section:'grammar'}],
+  19:[{type:'review',title:'Reading Review',dur:'50 min',icon:'📖',section:'rw'}],
+  21:[{type:'review',title:'Mixed Review',dur:'60 min',icon:'📊',section:'full'}],
+  22:[{type:'focus',title:'Data & Statistics',dur:'35 min',icon:'📊',section:'math'}],
+  24:[{type:'focus',title:'Writing: Transitions',dur:'25 min',icon:'✍️',section:'grammar'}],
+  26:[{type:'focus',title:'Geometry & Trig',dur:'40 min',icon:'📐',section:'geometry'}],
+  28:[{type:'test',title:'Full Practice Test #6',dur:'2h 14m',icon:'📋',section:'full'}],
+};
+
+// ========================
+// FULL SAT QUESTION BANK
+// ========================
+// Reading & Writing — Module 1 (27 Qs), Module 2 Easy & Hard
+// Math — Module 1 (22 Qs), Module 2 Easy & Hard (22 Qs each)
+
+const RWQ_M1=[
+  {sec:'rw',mod:1,q:'The author uses the phrase "digital wilderness" primarily to suggest that the internet is:',pass:'Navigating the modern internet can feel like exploring uncharted territory. Every click leads to new pathways, some fruitful and others desolate — a digital wilderness where few reliable guides exist.',opts:['Dangerous and unpredictable','Vast and difficult to navigate','Beautiful but inaccessible','Populated by dangerous people'],ans:1,type:'mc',skill:'Craft & Structure',exp:'The passage compares the internet to "uncharted territory" with unreliable guides — emphasizing its vastness and difficulty.'},
+  {sec:'rw',mod:1,q:'Which word most nearly replaces "desolate" while preserving the meaning?',pass:'Navigating the modern internet can feel like exploring uncharted territory. Every click leads to new pathways, some fruitful and others desolate — a digital wilderness where few reliable guides exist.',opts:['Frightening','Barren','Remote','Silent'],ans:1,type:'mc',skill:'Craft & Structure',exp:'"Desolate" means empty and lifeless. "Barren" is the closest match in this context.'},
+  {sec:'rw',mod:1,q:'Which revision best maintains formal tone?\n\n"The committee looked at the proposal but didn\'t really like it."',pass:null,opts:['The committee examined the proposal and found it lacking merit.','The committee checked out the proposal and it wasn\'t great.','The committee glanced at the proposal, not really into it.','The committee saw the proposal and thought nah.'],ans:0,type:'mc',skill:'Expression of Ideas',exp:'Choice A replaces informal language with formal equivalents.'},
+  {sec:'rw',mod:1,q:'A student claims renewable energy is always more cost-effective than fossil fuels. Which finding most weakens this claim?',pass:null,opts:['Solar panel costs have dropped 80% over 20 years','In some regions, natural gas remains cheaper per kilowatt-hour than solar','Wind energy produces zero emissions during operation','Most new power plants built in 2023 used renewable sources'],ans:1,type:'mc',skill:'Information & Ideas',exp:'If natural gas is cheaper per kWh in some regions, this directly undermines the claim that renewables are "always" more cost-effective.'},
+  {sec:'rw',mod:1,q:'The following sentence is missing a punctuation mark. Which option correctly completes it?\n\n"The researcher noted three limitations in her study __ small sample size, limited diversity, and short follow-up period."',pass:null,opts:['The researcher noted three limitations in her study: small sample size, limited diversity, and short follow-up period.','The researcher noted three limitations in her study; small sample size, limited diversity, and short follow-up period.','The researcher noted three limitations in her study, small sample size, limited diversity, and short follow-up period.','The researcher noted three limitations in her study — small sample size, limited diversity, and short follow-up period.'],ans:0,type:'mc',skill:'Standard English Conventions',exp:'A colon correctly introduces a list after an independent clause.'},
+  {sec:'rw',mod:1,q:'The passage argues that urban green spaces reduce stress in city residents. Which evidence would most directly support this argument?',pass:'A growing body of research suggests that access to parks and green spaces may have measurable effects on mental health in urban populations.',opts:['A study showing that green spaces increase property values','Neuroimaging data showing lower cortisol levels in people who visit parks regularly','Data showing that cities with more parks have lower crime rates','Survey data showing residents prefer green spaces to concrete areas'],ans:1,type:'mc',skill:'Information & Ideas',exp:'Cortisol is the stress hormone; lower cortisol directly supports the stress-reduction claim.'},
+  {sec:'rw',mod:1,q:'In which choice is the apostrophe used correctly?',pass:null,opts:['The companys profits rose sharply this quarter.','The company\'s profits rose sharply this quarter.','The companies profits rose sharply this quarter.','The companys\' profits rose sharply this quarter.'],ans:1,type:'mc',skill:'Standard English Conventions',exp:'"Company\'s" shows singular possessive. The apostrophe before the \'s\' is correct.'},
+  {sec:'rw',mod:1,q:'A researcher is writing about climate adaptation strategies. Which sentence most effectively introduces the paragraph\'s main idea?',pass:null,opts:['Many cities are trying things related to climate change.','Urban planners have increasingly adopted flood-resistant infrastructure as a primary climate adaptation strategy.','Climate change is a big issue.','There are various ways to deal with flooding in cities.'],ans:1,type:'mc',skill:'Expression of Ideas',exp:'Choice B is specific, formal, and clearly states what the paragraph will focus on.'},
+  {sec:'rw',mod:1,q:'Read the following. Which choice most logically completes the text?\n\nThe Arctic is warming at approximately four times the global average rate. As a result, __',pass:null,opts:['scientists have begun studying tropical rainforests more closely.','permafrost is thawing, releasing methane that further accelerates warming.','ocean temperatures in the tropics have remained stable.','polar bear populations have increased due to longer feeding seasons.'],ans:1,type:'mc',skill:'Information & Ideas',exp:'Permafrost thawing and methane release is the direct logical consequence of Arctic warming described in climate science.'},
+  {sec:'rw',mod:1,q:'Which transition word best connects these two sentences?\n\n"Early studies suggested the drug was highly effective. __ a 2023 meta-analysis found significant methodological flaws in those studies."',pass:null,opts:['Furthermore','However','Similarly','Therefore'],ans:1,type:'mc',skill:'Expression of Ideas',exp:'"However" signals contrast between the earlier optimistic finding and the later critical finding.'},
+  {sec:'rw',mod:1,q:'What does "seminal" most nearly mean as used in academic writing?',pass:'Darwin\'s On the Origin of Species is considered a seminal work in the field of biology, influencing generations of scientists.',opts:['Controversial','Foundational and highly influential','Recently published','Widely criticized'],ans:1,type:'mc',skill:'Craft & Structure',exp:'"Seminal" in academic contexts means groundbreaking or foundational — the root work that others build upon.'},
+  {sec:'rw',mod:1,q:'The author\'s main purpose in the passage is to:',pass:'Despite widespread skepticism, behavioral economists have demonstrated that humans consistently make irrational financial decisions — not because they lack information, but because cognitive biases systematically distort judgment. Policies that account for these biases, rather than assuming rational actors, yield measurably better outcomes.',opts:['Criticize economists for ignoring human psychology','Argue that behavioral economics offers a more realistic model for policy','Prove that all humans are fundamentally irrational','Explain the history of economic thought'],ans:1,type:'mc',skill:'Craft & Structure',exp:'The passage argues behavioral economics is more realistic and policy-relevant than traditional rational-actor models.'},
+  {sec:'rw',mod:1,q:'Which option uses a comma correctly?',pass:null,opts:['She loves hiking, and swimming, but hates running.','She loves hiking and swimming, but hates running.','She loves hiking and swimming but, hates running.','She loves hiking, and swimming but hates running.'],ans:1,type:'mc',skill:'Standard English Conventions',exp:'A comma before a coordinating conjunction (but) that joins two independent clauses is correct.'},
+  {sec:'rw',mod:1,q:'The graph shows that cities with higher population density consistently have lower per-capita carbon emissions. What does this data most support?',pass:'Urban planners have long debated whether density helps or hurts environmental outcomes.',opts:['Rural living is more environmentally harmful than urban living','Dense cities may be more carbon-efficient due to shared transit and infrastructure','Population density causes climate change','All cities should immediately increase their population'],ans:1,type:'mc',skill:'Information & Ideas',exp:'The pattern of lower per-capita emissions in denser cities suggests efficiency through shared systems — transit, heating, etc.'},
+  {sec:'rw',mod:1,q:'Which is an example of an objective claim (as opposed to a subjective opinion)?',pass:null,opts:['Shakespeare\'s plays are the most beautiful ever written.','Hamlet was first performed around 1600.','Poetry is more meaningful than prose.','Everyone should read classic literature.'],ans:1,type:'mc',skill:'Information & Ideas',exp:'The performance date is a verifiable historical fact. The others express opinions or value judgments.'},
+  {sec:'rw',mod:1,q:'Which word correctly fills the blank?\n\n"Neither the principal nor the teachers __ aware of the policy change."',pass:null,opts:['was','were','is','are being'],ans:1,type:'mc',skill:'Standard English Conventions',exp:'With "neither...nor," the verb agrees with the closer subject ("teachers," plural), so "were" is correct.'},
+  {sec:'rw',mod:1,q:'A marine biologist wants to argue that ocean acidification poses the greatest risk to coral ecosystems. Which evidence would best support this?',pass:null,opts:['A list of coral species found in the Pacific Ocean','Data showing a 30% decline in coral calcification rates correlated with rising ocean pH','Photographs showing bleached coral reefs','An interview with a marine biologist about her favorite reef'],ans:1,type:'mc',skill:'Information & Ideas',exp:'Measured declines in calcification — a direct biological effect of acidification — best support the argument.'},
+  {sec:'rw',mod:1,q:'Which sentence contains a dangling modifier?',pass:null,opts:['Running through the park, Maria spotted a rare bird.','Having finished the exam, the room felt quiet to Maya.','After reviewing the data, the scientist revised her hypothesis.','Exhausted from training, the athlete requested a day off.'],ans:1,type:'mc',skill:'Standard English Conventions',exp:'"Having finished the exam" modifies the room — but the room can\'t finish an exam. The modifier dangles.'},
+  {sec:'rw',mod:1,q:'The author writes: "The committee\'s decision was met with thunderous silence." This phrase is an example of:',pass:null,opts:['Simile','Hyperbole','Oxymoron','Alliteration'],ans:2,type:'mc',skill:'Craft & Structure',exp:'"Thunderous silence" combines contradictory concepts — loud and quiet — making it an oxymoron.'},
+  {sec:'rw',mod:1,q:'Which choice best combines the two sentences?\n\n"The river flooded the town. Emergency services were deployed within hours."',pass:null,opts:['The river flooded the town, so emergency services were deployed within hours.','The river flooded the town; emergency services were deployed within hours.','The river flooded the town, and emergency services were deployed within hours.','All of the above are grammatically acceptable.'],ans:3,type:'mc',skill:'Standard English Conventions',exp:'All three are grammatically correct ways to combine the sentences. The test would specify a stylistic goal — here all options are valid.'},
+  {sec:'rw',mod:1,q:'What is the function of the underlined phrase?\n\n"The study, which surveyed over 10,000 participants, found no significant correlation."',pass:null,opts:['It contradicts the main claim of the sentence.','It provides additional detail about the scope of the study.','It introduces the main finding.','It identifies the authors of the study.'],ans:1,type:'mc',skill:'Craft & Structure',exp:'The relative clause "which surveyed over 10,000 participants" gives descriptive detail about the study\'s scale.'},
+  {sec:'rw',mod:1,q:'A student\'s essay includes the claim: "Exercise always improves academic performance." Which revision makes this claim more appropriately qualified?',pass:null,opts:['Exercise often improves academic performance, particularly when combined with adequate sleep.','Exercise is the only thing that improves academic performance.','Exercise always significantly improves academic performance in every context.','Exercise rarely affects academic performance.'],ans:0,type:'mc',skill:'Expression of Ideas',exp:'"Often" and "particularly when" appropriately limit the absolute claim, making it more defensible.'},
+  {sec:'rw',mod:1,q:'Which sentence uses "affect" and "effect" correctly?',pass:null,opts:['The storm effected the power grid; the affect was widespread.','The storm affected the power grid; the effect was widespread.','The storm effected the power grid; the effect was widespread.','The storm affected the power grid; the affect was widespread.'],ans:1,type:'mc',skill:'Standard English Conventions',exp:'"Affect" is a verb (to influence); "effect" is a noun (the result). Choice B uses both correctly.'},
+  {sec:'rw',mod:1,q:'The passage implies that the invention of the printing press:',pass:'Before Gutenberg\'s press, books were copied by hand — a process that limited literacy to monks and nobles. The spread of mechanically printed texts transformed European society within a generation, as ideas that had once circulated among dozens could now reach thousands.',opts:['Had little impact on literacy rates','Was invented by monks to spread religion','Democratized access to information','Was immediately opposed by European governments'],ans:2,type:'mc',skill:'Information & Ideas',exp:'The passage shows the press made information accessible to thousands rather than dozens — democratizing knowledge.'},
+  {sec:'rw',mod:1,q:'Which choice correctly uses a semicolon?',pass:null,opts:['She studied hard; but failed the exam.','The conference was held in Boston; however, the keynote was given remotely.','He loves math; and science.','They arrived early; to get good seats.'],ans:1,type:'mc',skill:'Standard English Conventions',exp:'A semicolon followed by a conjunctive adverb ("however") connecting two independent clauses is correct.'},
+  {sec:'rw',mod:1,q:'In an essay arguing for stricter environmental regulations, which source would be most credible?',pass:null,opts:['A blog post by an environmental activist','A peer-reviewed study in Nature Climate Change','A tweet from a government official','A company\'s press release about its green initiatives'],ans:1,type:'mc',skill:'Information & Ideas',exp:'Peer-reviewed scientific journals represent the highest standard of credibility for empirical claims.'},
+  {sec:'rw',mod:1,q:'Which word best fills the blank to convey doubt?\n\n"The committee __ approved the budget, pending further review."',pass:null,opts:['definitively','tentatively','enthusiastically','unanimously'],ans:1,type:'mc',skill:'Craft & Structure',exp:'"Tentatively" conveys provisional, uncertain approval — matching "pending further review."'},
+  {sec:'rw',mod:1,q:'A passage describes how bees navigate using magnetic fields. Which title best captures the central idea?',pass:null,opts:['The Life Cycle of the Honeybee','Magnetic Compasses: How Bees Find Their Way','Why Bees Are Endangered','The Economic Value of Pollination'],ans:1,type:'mc',skill:'Craft & Structure',exp:'The magnetic field navigation mechanism is the central subject — Choice B captures it precisely.'},
+];
+
+const RWQ_M2_HARD=[
+  {sec:'rw',mod:2,q:'"Each of the participants were given a unique code" — the best correction is:',pass:null,opts:['Change "were" to "was"','Change "unique" to "different"','Change "Each" to "All"','Remove "unique"'],ans:0,type:'mc',skill:'Standard English Conventions',exp:'"Each" is singular, so the verb must be "was." Correct: "Each of the participants was given a unique code."'},
+  {sec:'rw',mod:2,q:'Which punctuation best completes: "The scientist published her findings __ the data remained inconclusive"?',pass:null,opts:['however,','although','even though,','; even though'],ans:1,type:'mc',skill:'Standard English Conventions',exp:'"Although" is a subordinating conjunction that correctly joins the two clauses without needing extra punctuation.'},
+  {sec:'rw',mod:2,q:'The passage states SAT scores rise 15 points per weekly study hour (up to 10 hrs). Students studying more than 10 hours show diminishing returns. Which conclusion is best supported?',pass:'A research team tracked 500 students\' weekly study hours and SAT scores over one year.',opts:['Studying 20 hours/week guarantees a perfect score','Students who study 6 hours weekly likely gain about 90 points','Every additional hour always improves scores equally','Students studying less than 1 hour gain no benefit'],ans:1,type:'mc',skill:'Information & Ideas',exp:'15 pts/hr × 6 hrs = 90 points — directly supported within the valid range (under 10 hrs).'},
+  {sec:'rw',mod:2,q:'The best transition connecting these sentences: "Climate change threatens coral reefs. __ ocean temperatures rise, bleaching events become more frequent."',pass:null,opts:['However','Therefore','As','Nevertheless'],ans:2,type:'mc',skill:'Expression of Ideas',exp:'"As" correctly shows a causal/temporal relationship — as one thing happens, so does another.'},
+  {sec:'rw',mod:2,q:'A historian argues that the fall of the Roman Empire was caused primarily by economic mismanagement. Which evidence would MOST directly weaken this argument?',pass:null,opts:['Records showing Rome had a trade deficit in the 3rd century','A demographic analysis showing population decline from plague preceded economic collapse','A study showing Roman military spending increased over time','Records of political corruption among Roman senators'],ans:1,type:'mc',skill:'Information & Ideas',exp:'If plague-induced population decline preceded and potentially caused the economic collapse, it undermines the primacy of economic mismanagement as the cause.'},
+  {sec:'rw',mod:2,q:'Which sentence most precisely conveys that a decision was made reluctantly?',pass:null,opts:['The board approved the merger.','After extended deliberation, the board grudgingly approved the merger, citing limited alternatives.','The board eventually approved the merger after some debate.','The board decided about the merger.'],ans:1,type:'mc',skill:'Expression of Ideas',exp:'"Grudgingly" and "citing limited alternatives" precisely convey reluctance and the constraining context.'},
+  {sec:'rw',mod:2,q:'The rhetorical function of the final paragraph of an essay that begins "We stand at a crossroads..." is most likely to:',pass:null,opts:['Introduce a new counterargument','Summarize the literature review','Issue a call to action using emotional appeal','Define a key technical term'],ans:2,type:'mc',skill:'Craft & Structure',exp:'The "crossroads" metaphor and urgency signal a call to action — a common rhetorical close appealing to emotion and urgency.'},
+  {sec:'rw',mod:2,q:'Which sentence correctly uses the subjunctive mood?',pass:null,opts:['If I was the president, I would change tax policy.','If I were the president, I would change tax policy.','If I am the president, I will change tax policy.','If I had been president, I would changed tax policy.'],ans:1,type:'mc',skill:'Standard English Conventions',exp:'The subjunctive "were" (not "was") is required in hypothetical conditionals: "If I were..."'},
+  {sec:'rw',mod:2,q:'A student writes: "The new policy will benefit students, teachers, and administrators alike." Which revision adds the most specific supporting detail?',pass:null,opts:['The new policy will benefit many people.','The new policy will benefit students through reduced tuition, teachers through smaller class sizes, and administrators through streamlined reporting systems.','The new policy is good for everyone at the school.','The new policy will be beneficial in numerous ways.'],ans:1,type:'mc',skill:'Expression of Ideas',exp:'Choice B specifies exactly how each group benefits, making the claim concrete and verifiable.'},
+  {sec:'rw',mod:2,q:'What does "obfuscate" most nearly mean?',pass:'Critics accused the spokesperson of attempting to obfuscate the company\'s role in the data breach by using technical jargon and vague denials.',opts:['Clarify','Obscure or confuse deliberately','Publicize widely','Apologize for'],ans:1,type:'mc',skill:'Craft & Structure',exp:'"Obfuscate" means to make unclear or confusing, often deliberately. The context of "technical jargon and vague denials" confirms this.'},
+  {sec:'rw',mod:2,q:'A researcher\'s data table shows that as income increases, museum attendance rises, but only up to a household income of $80,000, after which attendance plateaus. Which interpretation is best supported?',pass:null,opts:['Income has no relationship to museum attendance','Higher income always leads to more museum attendance','Income affects museum attendance up to a threshold, beyond which other factors dominate','People earning over $80,000 dislike museums'],ans:2,type:'mc',skill:'Information & Ideas',exp:'The plateau suggests income matters up to a point, after which other variables (time, interest) become limiting factors.'},
+  {sec:'rw',mod:2,q:'Which word best fills the blank to indicate a contrast?\n\n"The early results were promising; __, the final analysis revealed significant limitations."',pass:null,opts:['furthermore','consequently','moreover','nonetheless'],ans:3,type:'mc',skill:'Expression of Ideas',exp:'"Nonetheless" introduces a contrast — despite the promising start, limitations were found.'},
+  {sec:'rw',mod:2,q:'Which option correctly maintains parallel structure?',pass:null,opts:['She enjoys running, to swim, and hiking.','She enjoys running, swimming, and hiking.','She enjoys to run, swimming, and to hike.','She enjoys run, swim, and hike.'],ans:1,type:'mc',skill:'Standard English Conventions',exp:'Parallel structure requires consistent grammatical form. All three activities should be gerunds: running, swimming, hiking.'},
+  {sec:'rw',mod:2,q:'A novelist uses the phrase "the city breathed and groaned." This is an example of:',pass:null,opts:['Simile','Metaphor','Personification','Alliteration'],ans:2,type:'mc',skill:'Craft & Structure',exp:'Giving the city human qualities (breathing, groaning) is personification.'},
+  {sec:'rw',mod:2,q:'The passage below contains an error. Identify it.\n\n"The data clearly shows that vaccination rates and disease incidence is correlated."',pass:null,opts:['The word "clearly" is redundant','"Rates and incidence" is plural, so "is" should be "are"','"Vaccination rates" is not a valid scientific term','"Correlated" should be "correlating"'],ans:1,type:'mc',skill:'Standard English Conventions',exp:'The compound subject "rates and incidence" is plural, requiring the plural verb "are."'},
+  {sec:'rw',mod:2,q:'An author writes: "One cannot overstate the importance of early childhood education." What is the likely rhetorical purpose?',pass:null,opts:['To undermine critics of childhood education','To emphasize through hyperbole how critical the issue is','To make a precise scientific claim','To introduce a counterargument'],ans:1,type:'mc',skill:'Craft & Structure',exp:'"Cannot overstate" is emphatic language designed to convey that the importance is immense — a rhetorical intensification, not a literal claim.'},
+  {sec:'rw',mod:2,q:'Which sentence uses the colon correctly?',pass:null,opts:['She had: apples, bananas, and oranges.','The experiment yielded one result: a 40% reduction in bacterial growth.','He needs to: study, sleep, and eat well.','The team includes: Alex, Maya, and Chris.'],ans:1,type:'mc',skill:'Standard English Conventions',exp:'A colon may follow a complete independent clause to introduce a list or explanation. Only choice B has a complete clause before the colon.'},
+  {sec:'rw',mod:2,q:'The passage concludes that renewable energy adoption is primarily driven by economic incentives rather than environmental concern. Which finding would MOST support this conclusion?',pass:null,opts:['Countries with the most climate activists have the lowest renewable adoption rates','Nations where renewable energy costs fell below fossil fuels saw the sharpest adoption increases','Companies that market their green credentials saw increased consumer loyalty','Solar panel aesthetics improved significantly after 2010'],ans:1,type:'mc',skill:'Information & Ideas',exp:'If adoption spikes when renewables become economically competitive, this directly supports that economics, not environmentalism, drives adoption.'},
+  {sec:'rw',mod:2,q:'Which sentence is grammatically correct?',pass:null,opts:['Him and his brother attended the conference.','He and his brother attended the conference.','Him and his brother attends the conference.','He and his brother attends the conference.'],ans:1,type:'mc',skill:'Standard English Conventions',exp:'"He" is the correct subject pronoun (not "him"). The verb "attended" agrees with the plural subject.'},
+  {sec:'rw',mod:2,q:'A student\'s thesis states: "Social media has fundamentally transformed political communication." The student should MOST importantly:',pass:null,opts:['Replace "social media" with a more specific platform name','Define what "fundamentally transformed" means and provide measurable evidence','Remove the word "political" to broaden the argument','Use first person to make the argument more personal'],ans:1,type:'mc',skill:'Expression of Ideas',exp:'A thesis with "fundamentally transformed" needs to specify what changed, how it can be measured, and to what extent — otherwise it\'s too vague to argue.'},
+  {sec:'rw',mod:2,q:'What is the purpose of the rhetorical question in academic writing?',pass:null,opts:['To ask a question the author cannot answer','To invite the reader to consider an idea before the author addresses it','To acknowledge the opposing viewpoint','To provide evidence for the central claim'],ans:1,type:'mc',skill:'Craft & Structure',exp:'Rhetorical questions engage the reader and prime them to consider the author\'s upcoming answer or point.'},
+  {sec:'rw',mod:2,q:'Which revision of the following sentence adds the most important specificity?\n\n"The new law affected many businesses in the country."',pass:null,opts:['The new law greatly affected many businesses throughout the country.','The Tax Reform Act of 2024 imposed new reporting requirements on approximately 2.3 million small businesses nationwide.','The law affected businesses significantly.','The new law changed things for businesses across the nation.'],ans:1,type:'mc',skill:'Expression of Ideas',exp:'Choice B identifies the specific law, the nature of the impact, and the precise scale — making it the most informative revision.'},
+  {sec:'rw',mod:2,q:'The word "albeit" most nearly means:',pass:null,opts:['Therefore','Although','Because','Additionally'],ans:1,type:'mc',skill:'Craft & Structure',exp:'"Albeit" is a conjunction meaning "although" or "even though," used to introduce a concession.'},
+  {sec:'rw',mod:2,q:'Which option correctly fixes this run-on sentence?\n\n"The study had strong methodology the results were still inconclusive."',pass:null,opts:['The study had strong methodology, the results were still inconclusive.','The study had strong methodology; nevertheless, the results were still inconclusive.','The study had strong methodology and the results were still inconclusive.','The study had strong methodology but still inconclusive.'],ans:1,type:'mc',skill:'Standard English Conventions',exp:'A semicolon followed by a conjunctive adverb correctly joins two independent clauses with a contrasting relationship.'},
+  {sec:'rw',mod:2,q:'Which sentence contains a misplaced modifier?',pass:null,opts:['The student, exhausted from studying, fell asleep at her desk.','Almost every student passed the exam with minimal preparation.','She found the book that she had lost in the library yesterday.','Eager to impress, the intern prepared a detailed presentation.'],ans:2,type:'mc',skill:'Standard English Conventions',exp:'"Yesterday" modifies "lost" or "found" ambiguously — it\'s unclear if she lost it yesterday or found it yesterday.'},
+  {sec:'rw',mod:2,q:'A writer wants to acknowledge a counterargument before refuting it. Which sentence best does this?',pass:null,opts:['Some argue that standardized tests are inherently biased; however, data from multiple countries shows that well-designed tests can predict academic success across diverse populations.','Standardized tests are not biased at all.','Critics are wrong about standardized tests.','I disagree with critics of standardized testing.'],ans:0,type:'mc',skill:'Expression of Ideas',exp:'Choice A acknowledges the counterargument ("Some argue...") before pivoting to a refutation with evidence.'},
+  {sec:'rw',mod:2,q:'What does "tacit" most nearly mean?',pass:'The agreement between the two parties was tacit — never discussed openly but understood by all involved.',opts:['Written formally','Understood without being stated','Publicly celebrated','Legally binding'],ans:1,type:'mc',skill:'Craft & Structure',exp:'"Tacit" means implied or understood without being explicitly stated — reinforced by "never discussed openly."'},
+  {sec:'rw',mod:2,q:'Which correctly identifies the type of evidence in this sentence?\n\n"According to a 10-year longitudinal study of 4,500 participants, daily exercise reduces dementia risk by 35%."',pass:null,opts:['Anecdotal evidence','Quantitative empirical data from a controlled study','Expert opinion','Historical evidence'],ans:1,type:'mc',skill:'Information & Ideas',exp:'A longitudinal study with thousands of participants providing a measurable risk percentage is quantitative empirical data — the strongest form of scientific evidence.'},
+];
+
+const RWQ_M2_EASY=[
+  {sec:'rw',mod:2,q:'Which word means the opposite of "ancient"?',pass:null,opts:['Old','Modern','Historic','Traditional'],ans:1,type:'mc',skill:'Craft & Structure',exp:'"Modern" is the antonym of "ancient."'},
+  {sec:'rw',mod:2,q:'Which sentence is correctly punctuated?',pass:null,opts:["I like cats dogs and fish.",'I like cats, dogs, and fish.',"I like cats dogs, and fish.",'I like, cats, dogs, and fish.'],ans:1,type:'mc',skill:'Standard English Conventions',exp:'Items in a list are separated by commas. Choice B correctly uses the Oxford comma before "and."'},
+  {sec:'rw',mod:2,q:'What is the main idea of this passage?\n\n"Dogs are loyal, affectionate, and intelligent animals. They can be trained to assist people with disabilities, detect drugs, and even predict seizures."',pass:null,opts:['Dogs are dangerous','Dogs are highly capable and useful companions','All animals can be trained','Dogs are better than cats'],ans:1,type:'mc',skill:'Information & Ideas',exp:'The passage emphasizes dogs\' loyalty, intelligence, and range of useful tasks — supporting that they are capable companions.'},
+  {sec:'rw',mod:2,q:'Which sentence has correct subject-verb agreement?',pass:null,opts:['The students was excited about the field trip.','The students were excited about the field trip.','The students is excited about the field trip.','The students be excited about the field trip.'],ans:1,type:'mc',skill:'Standard English Conventions',exp:'"Students" is plural, so it requires the plural verb "were."'},
+  {sec:'rw',mod:2,q:'Choose the word that best fills the blank.\n\n"The weather was so __ that we decided to stay inside."',pass:null,opts:['pleasant','unpredictable','sunny','mild'],ans:1,type:'mc',skill:'Expression of Ideas',exp:'"Unpredictable" weather is a logical reason to stay inside. The other options suggest nice weather.'},
+  {sec:'rw',mod:2,q:'Which word is a synonym for "brave"?',pass:null,opts:['Timid','Courageous','Cautious','Nervous'],ans:1,type:'mc',skill:'Craft & Structure',exp:'"Courageous" is a direct synonym for "brave."'},
+  {sec:'rw',mod:2,q:'Which sentence uses "their," "there," and "they\'re" correctly?',pass:null,opts:["Their going to there house.","They're going to their house.","There going to they're house.","Their going to they're house."],ans:1,type:'mc',skill:'Standard English Conventions',exp:'"They\'re" = they are. "Their" = belonging to them. "There" = a place. Choice B uses all three correctly.'},
+  {sec:'rw',mod:2,q:'The word "frequently" most nearly means:',pass:null,opts:['Never','Rarely','Often','Sometimes'],ans:2,type:'mc',skill:'Craft & Structure',exp:'"Frequently" means many times or often.'},
+  {sec:'rw',mod:2,q:'Which transition word shows a result?',pass:null,opts:['However','Although','Therefore','Meanwhile'],ans:2,type:'mc',skill:'Expression of Ideas',exp:'"Therefore" introduces a result or conclusion based on the previous statement.'},
+  {sec:'rw',mod:2,q:'A student wants to add a concluding sentence to this paragraph about recycling. Which best concludes the paragraph?',pass:'Recycling reduces waste in landfills and conserves natural resources. Many communities have curbside recycling programs that make it easy to participate.',opts:['Landfills are very large.','By recycling regularly, individuals can make a meaningful contribution to environmental sustainability.','Some people do not recycle.','Natural resources are important.'],ans:1,type:'mc',skill:'Expression of Ideas',exp:'Choice B synthesizes the paragraph\'s points — landfill reduction and resource conservation — into a meaningful conclusion.'},
+  {sec:'rw',mod:2,q:'Which sentence is NOT a complete sentence (fragment)?',pass:null,opts:['She ran to the store.','Because the weather was bad.','The dog barked loudly.','He finished his homework.'],ans:1,type:'mc',skill:'Standard English Conventions',exp:'"Because the weather was bad" is a dependent clause — it cannot stand alone as a sentence.'},
+  {sec:'rw',mod:2,q:'The author describes the ocean as "a vast, breathing entity." This is an example of:',pass:null,opts:['Simile','Metaphor','Literal description','Alliteration'],ans:1,type:'mc',skill:'Craft & Structure',exp:'Calling the ocean an "entity" (not using "like" or "as") is a metaphor.'},
+  {sec:'rw',mod:2,q:'Which word best replaces "big" in a formal essay?',pass:null,opts:['Huge','Significant','Giant','Massive'],ans:1,type:'mc',skill:'Expression of Ideas',exp:'In formal academic writing, "significant" is the most appropriate replacement — it conveys importance, not just size.'},
+  {sec:'rw',mod:2,q:'Which choice uses "its" and "it\'s" correctly?',pass:null,opts:["The dog wagged it's tail.","The cat finished it's food.","The bird sang its song beautifully.","Its raining outside."],ans:2,type:'mc',skill:'Standard English Conventions',exp:'"Its" is possessive; "it\'s" means "it is." Choice C uses possessive "its" correctly.'},
+  {sec:'rw',mod:2,q:'Which sentence provides the most specific supporting detail?',pass:null,opts:['Exercise is good for you.','Regular aerobic exercise, such as jogging, reduces the risk of heart disease by approximately 35% according to the American Heart Association.','Working out helps your heart.','Physical activity is beneficial to health.'],ans:1,type:'mc',skill:'Information & Ideas',exp:'Choice B provides a specific type of exercise, a measurable benefit, and a credible source.'},
+  {sec:'rw',mod:2,q:'What does the prefix "un-" mean?',pass:null,opts:['Again','Not or opposite of','Before','After'],ans:1,type:'mc',skill:'Craft & Structure',exp:'"Un-" is a prefix meaning "not" — as in unhappy, unable, uncomfortable.'},
+  {sec:'rw',mod:2,q:'Which word correctly completes the sentence?\n\n"The team played __ in the championship game."',pass:null,opts:['good','well','best','goodly'],ans:1,type:'mc',skill:'Standard English Conventions',exp:'"Well" is an adverb that modifies the verb "played." "Good" is an adjective and cannot modify a verb.'},
+  {sec:'rw',mod:2,q:'A student writes a paragraph about the importance of sleep. Which sentence is OFF-TOPIC?',pass:null,opts:['Sleep deprivation affects concentration and memory.','Getting enough sleep improves mood and energy levels.','Many people enjoy watching movies before bed.','Teenagers need about 8–10 hours of sleep per night.'],ans:2,type:'mc',skill:'Expression of Ideas',exp:'Watching movies before bed is a behavior, not directly related to the importance of sleep for health and performance.'},
+  {sec:'rw',mod:2,q:'Which sentence is in the ACTIVE voice?',pass:null,opts:['The cake was eaten by the children.','The homework was finished by Maya.','Alex solved the math problem quickly.','The game was won by the home team.'],ans:2,type:'mc',skill:'Standard English Conventions',exp:'In active voice, the subject performs the action: "Alex" (subject) "solved" (verb) "the problem."'},
+  {sec:'rw',mod:2,q:'What type of writing is characterized by trying to convince the reader of a position?',pass:null,opts:['Narrative','Descriptive','Persuasive / Argumentative','Expository'],ans:2,type:'mc',skill:'Craft & Structure',exp:'Persuasive writing aims to convince the reader to adopt a viewpoint or take action.'},
+  {sec:'rw',mod:2,q:'Which word best fills the blank to show contrast?\n\n"He studied for hours; __, he failed the test."',pass:null,opts:['therefore','consequently','moreover','nonetheless'],ans:3,type:'mc',skill:'Expression of Ideas',exp:'"Nonetheless" introduces contrast — despite studying, he still failed.'},
+  {sec:'rw',mod:2,q:'Which sentence correctly places the comma in a compound sentence?',pass:null,opts:['She finished her homework, and then she watched TV.','She finished her homework and, then she watched TV.','She finished, her homework and then she watched TV.','She finished her homework and then, she watched TV.'],ans:0,type:'mc',skill:'Standard English Conventions',exp:'A comma before the coordinating conjunction "and" joining two independent clauses is correct.'},
+  {sec:'rw',mod:2,q:'The word "benevolent" most nearly means:',pass:null,opts:['Selfish','Kind and generous','Strict','Intelligent'],ans:1,type:'mc',skill:'Craft & Structure',exp:'"Benevolent" means well-meaning, kind, or charitable.'},
+  {sec:'rw',mod:2,q:'A student claims that reading more books improves writing. Which evidence would BEST support this?',pass:null,opts:['A survey showing students who read more also score higher on writing assessments','A list of popular books from the past decade','An interview with a student who enjoys reading','Data showing libraries have more books than before'],ans:0,type:'mc',skill:'Information & Ideas',exp:'A correlation between reading frequency and writing scores directly supports the student\'s claim.'},
+  {sec:'rw',mod:2,q:'Which choice is punctuated correctly?',pass:null,opts:["It's a beautiful day, isn't it?","Its a beautiful day isnt it?","It's a beautiful day isn't it?","Its a beautiful day, isn't it?"],ans:0,type:'mc',skill:'Standard English Conventions',exp:'"It\'s" = it is. A comma precedes a tag question. Choice A correctly uses both.'},
+  {sec:'rw',mod:2,q:'An author writes "the deadline loomed like a storm cloud." This is an example of:',pass:null,opts:['Metaphor','Personification','Simile','Hyperbole'],ans:2,type:'mc',skill:'Craft & Structure',exp:'The comparison uses "like," making it a simile (not a metaphor).'},
+  {sec:'rw',mod:2,q:'Which sentence should a student use to introduce the topic of a paragraph about climate change?',pass:null,opts:['Climate change is very bad.','Climate change, caused primarily by human greenhouse gas emissions, poses significant threats to global ecosystems and economies.','I think climate change is a problem.','Climate change is something many people worry about.'],ans:1,type:'mc',skill:'Expression of Ideas',exp:'Choice B identifies the cause, scope, and consequence of climate change clearly and formally.'},
+  {sec:'rw',mod:2,q:'Which word correctly fills the blank?\n\n"The scientist\'s __ findings challenged decades of accepted theory."',pass:null,opts:['irrelevant','groundbreaking','ordinary','minor'],ans:1,type:'mc',skill:'Craft & Structure',exp:'"Groundbreaking" logically describes findings that challenge established theory.'},
+];
+
+// Math Module 1 — 22 questions
+const MATHQ_M1=[
+  {sec:'math',mod:1,q:'If 3x + 7 = 22, what is the value of x?',pass:null,opts:['3','4','5','6'],ans:2,type:'mc',skill:'Algebra',exp:'3x = 15, so x = 5.'},
+  {sec:'math',mod:1,q:'The graph of y = 2x² − 8x + 6 has its vertex at:',pass:null,opts:['(2, −2)','(2, 2)','(4, −2)','(−2, 6)'],ans:0,type:'mc',skill:'Advanced Math',exp:'x = −b/2a = 8/4 = 2. y = 2(4)−16+6 = −2. Vertex: (2, −2).'},
+  {sec:'math',mod:1,q:'A store sells apples for $1.20 and oranges for $0.90. A customer buys 12 fruits for $12.30. How many apples did they buy?',pass:null,opts:['5','6','7','9'],ans:2,type:'mc',skill:'Problem Solving',exp:'1.20a + 0.90(12−a) = 12.30 → 0.30a = 1.50 → a = 7.'},
+  {sec:'math',mod:1,q:'What is the positive solution to x² − 5x − 14 = 0?',pass:null,opts:null,ans:'7',type:'spr',skill:'Advanced Math',exp:'(x−7)(x+2) = 0. Positive solution: x = 7.'},
+  {sec:'math',mod:1,q:'If f(x) = x² + 4 and g(x) = 2x − 1, what is f(g(3))?',pass:null,opts:['21','25','29','53'],ans:2,type:'mc',skill:'Advanced Math',exp:'g(3) = 5. f(5) = 25+4 = 29.'},
+  {sec:'math',mod:1,q:'A right triangle has legs of 6 and 8. What is the length of the hypotenuse?',pass:null,opts:['10','11','12','14'],ans:0,type:'mc',skill:'Geometry & Trig',exp:'c² = 36+64 = 100. c = 10.'},
+  {sec:'math',mod:1,q:'The mean of five numbers is 14. Four of the numbers are 10, 12, 16, and 18. What is the fifth number?',pass:null,opts:['12','14','13','15'],ans:1,type:'mc',skill:'Problem Solving',exp:'Sum = 70. 10+12+16+18 = 56. Fifth = 14.'},
+  {sec:'math',mod:1,q:'A line passes through (0, 3) and (4, 11). What is the slope?',pass:null,opts:null,ans:'2',type:'spr',skill:'Algebra',exp:'Slope = (11−3)/(4−0) = 8/4 = 2.'},
+  {sec:'math',mod:1,q:'Which of the following is equivalent to (x + 3)(x − 5)?',pass:null,opts:['x² − 2x − 15','x² + 2x − 15','x² − 2x + 15','x² − 8x − 15'],ans:0,type:'mc',skill:'Advanced Math',exp:'FOIL: x²−5x+3x−15 = x²−2x−15.'},
+  {sec:'math',mod:1,q:'A car travels 240 miles in 4 hours. At this rate, how far will it travel in 7 hours?',pass:null,opts:['360','400','420','440'],ans:2,type:'mc',skill:'Problem Solving',exp:'Rate = 60 mph. 60 × 7 = 420 miles.'},
+  {sec:'math',mod:1,q:'What is the value of 3⁴?',pass:null,opts:['12','27','81','64'],ans:2,type:'mc',skill:'Algebra',exp:'3⁴ = 3×3×3×3 = 81.'},
+  {sec:'math',mod:1,q:'If a circle has a radius of 5, what is its area? (Use π ≈ 3.14)',pass:null,opts:['15.7','31.4','78.5','157'],ans:2,type:'mc',skill:'Geometry & Trig',exp:'A = πr² = 3.14 × 25 = 78.5.'},
+  {sec:'math',mod:1,q:'Two parallel lines are cut by a transversal. One angle measures 65°. What is the measure of its co-interior angle?',pass:null,opts:['65°','115°','25°','180°'],ans:1,type:'mc',skill:'Geometry & Trig',exp:'Co-interior (same-side interior) angles are supplementary: 180° − 65° = 115°.'},
+  {sec:'math',mod:1,q:'A data set has values: 2, 4, 4, 6, 8, 10, 12. What is the median?',pass:null,opts:['4','6','8','7'],ans:1,type:'mc',skill:'Problem Solving',exp:'The median is the middle value: 2,4,4,6,8,10,12 → 6.'},
+  {sec:'math',mod:1,q:'Solve for y: 2y − 3 = 5y + 9',pass:null,opts:['y = −4','y = 4','y = −3','y = 3'],ans:0,type:'mc',skill:'Algebra',exp:'2y − 5y = 9 + 3 → −3y = 12 → y = −4.'},
+  {sec:'math',mod:1,q:'What is 15% of 240?',pass:null,opts:['24','30','36','40'],ans:2,type:'mc',skill:'Problem Solving',exp:'0.15 × 240 = 36.'},
+  {sec:'math',mod:1,q:'The equation 4x + 2y = 20 can be rewritten in slope-intercept form as:',pass:null,opts:['y = −2x + 10','y = 2x − 10','y = −4x + 20','y = 4x − 10'],ans:0,type:'mc',skill:'Algebra',exp:'2y = −4x + 20 → y = −2x + 10.'},
+  {sec:'math',mod:1,q:'A rectangle has a length of 12 and a width of 7. What is the perimeter?',pass:null,opts:['38','42','84','19'],ans:0,type:'mc',skill:'Geometry & Trig',exp:'P = 2(12+7) = 2(19) = 38.'},
+  {sec:'math',mod:1,q:'If 5 workers can complete a job in 8 days, how many days will 10 workers take (assuming same rate)?',pass:null,opts:['2','4','6','10'],ans:1,type:'mc',skill:'Problem Solving',exp:'Total work = 40 worker-days. 40 ÷ 10 = 4 days.'},
+  {sec:'math',mod:1,q:'What is the value of √144?',pass:null,opts:null,ans:'12',type:'spr',skill:'Algebra',exp:'√144 = 12.'},
+  {sec:'math',mod:1,q:'A spinner has 8 equal sections numbered 1–8. What is the probability of spinning a prime number?',pass:null,opts:['1/4','3/8','1/2','5/8'],ans:2,type:'mc',skill:'Problem Solving',exp:'Primes from 1–8: 2,3,5,7 = 4 primes. P = 4/8 = 1/2.'},
+  {sec:'math',mod:1,q:'Which ordered pair is a solution to the system:\ny = 2x + 1 and y = −x + 7?',pass:null,opts:['(2, 5)','(3, 7)','(1, 3)','(2, 4)'],ans:0,type:'mc',skill:'Algebra',exp:'2x+1 = −x+7 → 3x = 6 → x = 2. y = 5. Check: −2+7 = 5. ✓'},
+];
+
+// Math Module 2 Hard — 22 questions
+const MATHQ_M2_HARD=[
+  {sec:'math',mod:2,q:'If x² + bx + 16 = 0 has exactly one solution, what is the value of |b|?',pass:null,opts:['4','6','8','16'],ans:2,type:'mc',skill:'Advanced Math',exp:'For one solution, discriminant = 0: b²−4(16) = 0 → b² = 64 → |b| = 8.'},
+  {sec:'math',mod:2,q:'The function f(x) = 3x³ − 12x passes through the origin. How many times does it cross the x-axis?',pass:null,opts:['1','2','3','4'],ans:2,type:'mc',skill:'Advanced Math',exp:'3x(x²−4) = 3x(x−2)(x+2). Roots: x = 0, 2, −2. Three crossings.'},
+  {sec:'math',mod:2,q:'In a right triangle, sin(θ) = 3/5. What is tan(θ)?',pass:null,opts:['3/4','4/3','3/5','4/5'],ans:0,type:'mc',skill:'Geometry & Trig',exp:'Opposite=3, hypotenuse=5, so adjacent=4. tan(θ) = 3/4.'},
+  {sec:'math',mod:2,q:'A geometric sequence has first term 2 and common ratio 3. What is the 5th term?',pass:null,opts:['162','54','486','18'],ans:0,type:'mc',skill:'Advanced Math',exp:'a₅ = 2·3⁴ = 2·81 = 162.'},
+  {sec:'math',mod:2,q:'If log₂(x) = 5, what is x?',pass:null,opts:['10','25','32','64'],ans:2,type:'mc',skill:'Advanced Math',exp:'log₂(x)=5 means 2⁵ = x = 32.'},
+  {sec:'math',mod:2,q:'The parabola y = ax² + bx + c passes through (0,3), (1,6), and (2,13). What is the value of a?',pass:null,opts:['1','2','3','4'],ans:1,type:'mc',skill:'Advanced Math',exp:'c=3. a+b+3=6 → a+b=3. 4a+2b+3=13 → 4a+2b=10 → 2a+b=5. Subtract: a=2.'},
+  {sec:'math',mod:2,q:'A circle has equation x² + y² − 6x + 8y = 0. What is the radius?',pass:null,opts:['5','10','7','√50'],ans:0,type:'mc',skill:'Geometry & Trig',exp:'Complete the square: (x−3)² + (y+4)² = 9+16 = 25. r = 5.'},
+  {sec:'math',mod:2,q:'What is the sum of the solutions of x² − 7x + 10 = 0?',pass:null,opts:null,ans:'7',type:'spr',skill:'Advanced Math',exp:'By Vieta\'s formulas, sum of roots = −b/a = 7/1 = 7.'},
+  {sec:'math',mod:2,q:'A population grows at 4% per year. Starting at 5,000, approximately how many years to reach 6,000?',pass:null,opts:['3','4','5','6'],ans:2,type:'mc',skill:'Problem Solving',exp:'5000(1.04)^n = 6000 → 1.04^n ≈ 1.2 → n ≈ ln(1.2)/ln(1.04) ≈ 4.66 → ~5 years.'},
+  {sec:'math',mod:2,q:'If the matrix A = [[2,3],[1,4]], what is det(A)?',pass:null,opts:['5','8','11','−5'],ans:0,type:'mc',skill:'Advanced Math',exp:'det = (2)(4)−(3)(1) = 8−3 = 5.'},
+  {sec:'math',mod:2,q:'A rational function has vertical asymptote at x = 3 and horizontal asymptote at y = 2. Which could be the function?',pass:null,opts:['f(x) = 2(x+1)/(x−3)','f(x) = 3x/(x−2)','f(x) = (x−3)/2x','f(x) = 2/(x+3)'],ans:0,type:'mc',skill:'Advanced Math',exp:'f(x)=2(x+1)/(x−3): vertical asymptote when x=3; horizontal: ratio of leading coefficients = 2/1 = 2. ✓'},
+  {sec:'math',mod:2,q:'The volume of a cone is 48π cm³ and height is 9 cm. What is the radius?',pass:null,opts:['2','3','4','6'],ans:2,type:'mc',skill:'Geometry & Trig',exp:'V = (1/3)πr²h → 48π = (1/3)πr²(9) = 3πr² → r² = 16 → r = 4.'},
+  {sec:'math',mod:2,q:'If i = √(−1), what is i²³?',pass:null,opts:['1','−1','i','−i'],ans:3,type:'mc',skill:'Advanced Math',exp:'i cycles every 4: 23 = 4·5 + 3, so i²³ = i³ = −i.'},
+  {sec:'math',mod:2,q:'Two dice are rolled. What is the probability that the sum equals 8?',pass:null,opts:['1/6','5/36','7/36','1/4'],ans:1,type:'mc',skill:'Problem Solving',exp:'Pairs summing to 8: (2,6),(3,5),(4,4),(5,3),(6,2) = 5 outcomes. P = 5/36.'},
+  {sec:'math',mod:2,q:'What is the domain of f(x) = √(2x − 6) + 1/x?',pass:null,opts:['x > 3','x ≥ 3, x ≠ 0','x ≥ 3','x > 0'],ans:1,type:'mc',skill:'Advanced Math',exp:'√(2x−6): requires 2x−6 ≥ 0 → x ≥ 3. Also x ≠ 0 (already satisfied since 3>0, but must state). Domain: x ≥ 3.'},
+  {sec:'math',mod:2,q:'A line is tangent to x² + y² = 25 at the point (3, 4). What is the equation of the tangent line?',pass:null,opts:['3x + 4y = 25','4x + 3y = 25','3x − 4y = 25','y = (4/3)x'],ans:0,type:'mc',skill:'Geometry & Trig',exp:'The tangent at (x₀,y₀) on x²+y²=r² is x₀x + y₀y = r². So 3x + 4y = 25.'},
+  {sec:'math',mod:2,q:'If 2^(x+1) = 8^(x−1), what is x?',pass:null,opts:['2','3','4','5'],ans:2,type:'mc',skill:'Advanced Math',exp:'2^(x+1) = 2^(3(x−1)) → x+1 = 3x−3 → 4 = 2x → x = 2. Wait: x+1=3x−3 → 4=2x → x=2. Let\'s verify: 2^3=8, 8^1=8 ✓. Answer: 2.'},
+  {sec:'math',mod:2,q:'A data set has mean 50 and standard deviation 5. A data point has a z-score of 2.4. What is the data point value?',pass:null,opts:null,ans:'62',type:'spr',skill:'Problem Solving',exp:'x = μ + zσ = 50 + 2.4(5) = 50 + 12 = 62.'},
+  {sec:'math',mod:2,q:'The function g(x) = 2f(3x) + 1 is derived from f(x). If f has period 4, what is the period of g?',pass:null,opts:['4/3','4','12','3'],ans:0,type:'mc',skill:'Advanced Math',exp:'Horizontal compression by factor 3 changes period: period of g = 4/3.'},
+  {sec:'math',mod:2,q:'A parabola has focus at (0, 2) and directrix y = −2. Which equation represents it?',pass:null,opts:['x² = 8y','y² = 8x','x² = 4y','y² = 4x'],ans:0,type:'mc',skill:'Advanced Math',exp:'p = 2 (distance from vertex to focus). Equation: x² = 4py = 8y.'},
+  {sec:'math',mod:2,q:'An arithmetic sequence has a₁ = 7 and a₁₀ = 43. What is the common difference?',pass:null,opts:null,ans:'4',type:'spr',skill:'Algebra',exp:'a₁₀ = a₁ + 9d → 43 = 7 + 9d → 9d = 36 → d = 4.'},
+  {sec:'math',mod:2,q:'If cos(θ) = −3/5 and θ is in the second quadrant, what is sin(θ)?',pass:null,opts:['4/5','−4/5','3/5','−3/5'],ans:0,type:'mc',skill:'Geometry & Trig',exp:'In Q2, sin is positive. sin²+cos² = 1 → sin² = 1 − 9/25 = 16/25 → sin = 4/5.'},
+];
+
+// Math Module 2 Easy — 22 questions
+const MATHQ_M2_EASY=[
+  {sec:'math',mod:2,q:'What is 8 × 7?',pass:null,opts:['54','56','58','62'],ans:1,type:'mc',skill:'Algebra',exp:'8 × 7 = 56.'},
+  {sec:'math',mod:2,q:'What is 1/4 + 1/2?',pass:null,opts:['1/6','3/4','2/6','1/3'],ans:1,type:'mc',skill:'Algebra',exp:'1/4 + 2/4 = 3/4.'},
+  {sec:'math',mod:2,q:'A bag has 5 red marbles, 3 blue marbles, and 2 green marbles. What is the probability of picking a blue marble?',pass:null,opts:['1/5','3/10','1/3','3/5'],ans:1,type:'mc',skill:'Problem Solving',exp:'P = 3/10.'},
+  {sec:'math',mod:2,q:'What is the area of a square with side length 9?',pass:null,opts:['18','36','81','45'],ans:2,type:'mc',skill:'Geometry & Trig',exp:'Area = 9² = 81.'},
+  {sec:'math',mod:2,q:'Solve: 5x = 35',pass:null,opts:null,ans:'7',type:'spr',skill:'Algebra',exp:'x = 35/5 = 7.'},
+  {sec:'math',mod:2,q:'What is 25% of 80?',pass:null,opts:['15','20','25','30'],ans:1,type:'mc',skill:'Problem Solving',exp:'0.25 × 80 = 20.'},
+  {sec:'math',mod:2,q:'A line has slope 2 and y-intercept 3. Which equation represents it?',pass:null,opts:['y = 3x + 2','y = 2x + 3','y = 2x − 3','y = 3x − 2'],ans:1,type:'mc',skill:'Algebra',exp:'Slope-intercept: y = mx + b = 2x + 3.'},
+  {sec:'math',mod:2,q:'What is the perimeter of a triangle with sides 5, 7, and 9?',pass:null,opts:['18','21','24','11'],ans:1,type:'mc',skill:'Geometry & Trig',exp:'P = 5+7+9 = 21.'},
+  {sec:'math',mod:2,q:'What is 3² + 4²?',pass:null,opts:['25','14','49','16'],ans:0,type:'mc',skill:'Algebra',exp:'9 + 16 = 25.'},
+  {sec:'math',mod:2,q:'If y = 3x − 1 and x = 4, what is y?',pass:null,opts:['10','11','12','13'],ans:1,type:'mc',skill:'Algebra',exp:'y = 3(4)−1 = 11.'},
+  {sec:'math',mod:2,q:'What is the next number in the pattern: 3, 6, 12, 24, __?',pass:null,opts:['36','42','48','60'],ans:2,type:'mc',skill:'Algebra',exp:'Each term doubles: 24 × 2 = 48.'},
+  {sec:'math',mod:2,q:'A triangle has angles of 50° and 70°. What is the third angle?',pass:null,opts:['50°','60°','70°','80°'],ans:1,type:'mc',skill:'Geometry & Trig',exp:'180° − 50° − 70° = 60°.'},
+  {sec:'math',mod:2,q:'What is the mode of: 3, 7, 7, 8, 9, 9, 9, 10?',pass:null,opts:['7','8','9','10'],ans:2,type:'mc',skill:'Problem Solving',exp:'9 appears three times — the most frequent value.'},
+  {sec:'math',mod:2,q:'What is √49?',pass:null,opts:null,ans:'7',type:'spr',skill:'Algebra',exp:'√49 = 7.'},
+  {sec:'math',mod:2,q:'A store marks an item up 20% from its cost of $50. What is the selling price?',pass:null,opts:['$55','$60','$65','$70'],ans:1,type:'mc',skill:'Problem Solving',exp:'50 + 0.20(50) = 50+10 = $60.'},
+  {sec:'math',mod:2,q:'What is the slope of a horizontal line?',pass:null,opts:['0','1','Undefined','∞'],ans:0,type:'mc',skill:'Algebra',exp:'A horizontal line has no rise, so slope = 0.'},
+  {sec:'math',mod:2,q:'Evaluate: 4(3 + 2) − 6 ÷ 2',pass:null,opts:['14','17','20','11'],ans:1,type:'mc',skill:'Algebra',exp:'4(5)−3 = 20−3 = 17.'},
+  {sec:'math',mod:2,q:'A rectangle has length 10 and width 4. What is its area?',pass:null,opts:['28','40','14','20'],ans:1,type:'mc',skill:'Geometry & Trig',exp:'A = 10 × 4 = 40.'},
+  {sec:'math',mod:2,q:'Simplify: 2x + 3x − x',pass:null,opts:['4x','5x','6x','3x'],ans:0,type:'mc',skill:'Algebra',exp:'2x + 3x − x = 4x.'},
+  {sec:'math',mod:2,q:'What is the value of 0.5 × 0.4?',pass:null,opts:['0.009','0.02','0.2','2'],ans:2,type:'mc',skill:'Algebra',exp:'0.5 × 0.4 = 0.20.'},
+  {sec:'math',mod:2,q:'If a recipe calls for 3 cups of flour for 24 cookies, how many cups are needed for 48 cookies?',pass:null,opts:['4','5','6','7'],ans:2,type:'mc',skill:'Problem Solving',exp:'Ratio: 3/24 = x/48 → x = 6.'},
+  {sec:'math',mod:2,q:'What is the range of: 4, 9, 3, 7, 15, 2?',pass:null,opts:null,ans:'13',type:'spr',skill:'Problem Solving',exp:'Range = max − min = 15 − 2 = 13.'},
+];
+
+// ========================
+// STATE
+// ========================
+let CU=null,calYear=2026,calMonth=2,TS={},TIMER_INT=null,AUTH_MODE='signin',AUTH_ROLE='student';
+// Task tracker state (in-memory)
+let taskChecked = {};
+// SAT date from signup
+let userSATDate = null;
+
+// ========================
+// AUTH FUNCTIONS
+// ========================
+function switchAuthMode(mode){
+  AUTH_MODE=mode;
+  document.getElementById('tab-signin').classList.toggle('active',mode==='signin');
+  document.getElementById('tab-signup').classList.toggle('active',mode==='signup');
+  document.getElementById('form-signin').style.display=mode==='signin'?'':'none';
+  document.getElementById('form-signup').style.display=mode==='signup'?'':'none';
+}
+function selectRole(r){
+  AUTH_ROLE=r;
+  document.getElementById('role-student').classList.toggle('active',r==='student');
+  document.getElementById('role-parent').classList.toggle('active',r==='parent');
+  document.getElementById('student-fields').style.display=r==='student'?'':'none';
+  document.getElementById('parent-fields').style.display=r==='parent'?'':'none';
+}
+function toggleCalAdd(){
+  const cb=document.getElementById('su-add-cal');
+  cb.checked=!cb.checked;
+}
+function googleAuth(){
+  // Simulate Google auth — log in as Alex
+  CU={...USERS['alex@scoreup.com'],email:'alex@scoreup.com'};
+  finishLogin();
+}
+function doSignIn(){
+  const e=document.getElementById('si-email').value.trim();
+  const p=document.getElementById('si-pass').value.trim();
+  const u=USERS[e];
+  if(!u||u.pass!==p){alert('Incorrect credentials. Try the demo credentials shown.');return;}
+  CU={...u,email:e};
+  if(u.satDate) userSATDate=u.satDate;
+  finishLogin();
+}
+function doSignUp(){
+  const name=document.getElementById('su-name').value.trim();
+  const email=document.getElementById('su-email').value.trim();
+  const pass=document.getElementById('su-pass').value.trim();
+  if(!name||!email||!pass){alert('Please fill in all required fields.');return;}
+  if(AUTH_ROLE==='student'){
+    const satDate=document.getElementById('su-sat-date').value;
+    const addCal=document.getElementById('su-add-cal').checked;
+    userSATDate=satDate||null;
+    if(addCal&&satDate){
+      // Generate calendar link
+      const d=new Date(satDate+'T08:00:00');
+      const fmt=t=>t.toISOString().replace(/[-:]/g,'').split('.')[0]+'Z';
+      const end=new Date(d.getTime()+5*3600000);
+      const gcal=`https://calendar.google.com/calendar/render?action=TEMPLATE&text=SAT+Exam+Day&dates=${fmt(d)}/${fmt(end)}&details=Your+SAT+exam+scheduled+via+ScoreUp`;
+      window.open(gcal,'_blank');
+    }
+    USERS[email]={pass,role:'student',name,initials:name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase(),satDate,grade:document.getElementById('su-grade').value||'11th Grade'};
+    CU={...USERS[email],email};
+  } else {
+    const studentEmail=document.getElementById('su-student-email').value.trim();
+    if(!USERS[studentEmail]){alert('No student found with that email. Make sure your student has signed up first.');return;}
+    USERS[email]={pass,role:'parent',name,initials:name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase(),linkedStudent:studentEmail};
+    CU={...USERS[email],email};
+  }
+  finishLogin();
+}
+function finishLogin(){
+  document.getElementById('auth-screen').style.display='none';
+  document.getElementById('main-nav').style.display='flex';
+  setupNav();
+  if(CU.role==='student')showPage('dashboard');else showPage('tracker');
+}
+function doLogout(){
+  CU=null;
+  stopTimer();
+  document.getElementById('auth-screen').style.display='flex';
+  document.getElementById('main-nav').style.display='none';
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+}
+function setupNav(){
+  const rb=document.getElementById('role-badge');
+  rb.textContent=CU.role==='student'?'Student':'Parent/Tutor';
+  rb.className='role-badge '+(CU.role==='student'?'role-student':'role-parent');
+  document.getElementById('nav-username').textContent=CU.name;
+  document.getElementById('nav-avatar').textContent=CU.initials;
+  const tabs=document.getElementById('nav-tabs');
+  tabs.innerHTML=CU.role==='student'
+    ?`<button class="nav-tab" onclick="showPage('dashboard')">Dashboard</button><button class="nav-tab" onclick="showPage('practice')">Practice Tests</button><button class="nav-tab" onclick="showPage('calendar')">Calendar</button><button class="nav-tab" onclick="showPage('progress')">My Progress</button>`
+    :`<button class="nav-tab active" onclick="showPage('tracker')">Student Tracker</button>`;
+}
+function showPage(name){
+  stopTimer();
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(t=>{if(t.textContent.toLowerCase().includes(name==='progress'?'progress':name))t.classList.add('active');});
+  if(name==='dashboard')renderDash();
+  if(name==='practice')renderPracticeList();
+  if(name==='calendar')renderCalendar();
+  if(name==='progress')renderProgress();
+  if(name==='tracker')renderTracker();
+}
+function toggleCalc(){document.getElementById('calc-panel').classList.toggle('open');}
+
+// ========================
+// DASHBOARD
+// ========================
+function renderDash(){
+  const s=STUDENTS.find(x=>x.email===CU.email)||STUDENTS[0];
+  const months=['Sep','Oct','Nov','Dec','Jan','Feb','Mar'];
+  const bars=s.hist.map((v,i)=>{const h=Math.round(((v-1050)/400)*80)+10;return`<div class="bar-item"><div style="font-size:10px;font-weight:500;">${v}</div><div class="bar" style="height:${h}px;background:${i===s.hist.length-1?'var(--accent)':'#bfdbfe'};"></div></div>`;}).join('');
+  const topics=[
+    {icon:'📐',name:'Algebra: Quadratics',score:s.subj.math-15,c:'fill-red',a:'var(--danger)'},
+    {icon:'📖',name:'Reading: Main Idea',score:s.subj.reading-10,c:'fill-orange',a:'#f59e0b'},
+    {icon:'✍️',name:'Writing: Punctuation',score:s.subj.writing-5,c:'fill-orange',a:'#f59e0b'},
+    {icon:'📊',name:'Data Analysis',score:Math.min(100,s.subj.math+8),c:'fill-green',a:'var(--success)'},
+    {icon:'🔤',name:'Vocabulary in Context',score:Math.min(100,s.subj.reading+12),c:'fill-blue',a:'var(--accent)'},
+  ];
+  const satInfo=userSATDate||CU.satDate?`<div class="alert alert-info" style="margin-top:12px;"><span>📅</span><div><strong>SAT Date: ${formatSATDate(userSATDate||CU.satDate)}</strong><br><span style="font-size:12px;">${daysUntilSAT(userSATDate||CU.satDate)} days away. Stay on track!</span></div></div>`:'';
+  document.getElementById('page-dashboard').innerHTML=`<div class="container">
+    <div style="margin-bottom:24px;"><div class="section-title">Good morning, ${s.name.split(' ')[0]} 👋</div><div class="section-sub">You have a practice session today. Keep the momentum!</div></div>
+    <div class="four-col" style="margin-bottom:20px;">
+      <div class="card metric"><div class="metric-val" style="color:var(--accent);">${s.current}</div><div class="metric-label">Current Score</div><div class="metric-delta delta-up">↑ ${s.change} pts this month</div></div>
+      <div class="card metric"><div class="metric-val">${s.target}</div><div class="metric-label">Target Score</div><div class="metric-delta" style="color:var(--text-muted);">${s.target-s.current} pts to go</div></div>
+      <div class="card metric"><div class="metric-val" style="color:var(--success);">${s.streak}</div><div class="metric-label">Study Streak</div><div class="metric-delta delta-up">Personal best!</div></div>
+      <div class="card metric"><div class="metric-val">${s.tests}</div><div class="metric-label">Tests Completed</div><div class="metric-delta" style="color:var(--text-muted);">3 this week</div></div>
+    </div>
+    <div class="two-col">
+      <div>
+        <div class="card" style="margin-bottom:16px;">
+          <div class="card-header"><span class="card-title">Score Progress</span><span class="badge badge-green">On Track</span></div>
+          <div class="bar-chart">${bars}</div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);margin-top:4px;">${months.map(m=>`<span>${m}</span>`).join('')}</div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Focus Areas</span><span style="font-size:12px;color:var(--accent);cursor:pointer;" onclick="showPage('progress')">View all →</span></div>
+          ${topics.map(t=>`<div class="topic-row"><div class="topic-icon" style="background:${t.a}20;">${t.icon}</div><div style="flex:1;"><div style="font-size:14px;font-weight:500;">${t.name}</div><div class="progress-bar" style="margin-top:4px;"><div class="progress-fill ${t.c}" style="width:${Math.min(100,Math.max(5,t.score))}%;"></div></div></div><div style="font-size:13px;font-weight:600;min-width:36px;text-align:right;color:${t.score<60?'var(--danger)':t.score<75?'#d97706':'var(--success)'};">${Math.min(100,Math.max(5,t.score))}%</div></div>`).join('')}
+        </div>
+      </div>
+      <div>
+        <div class="card" style="margin-bottom:16px;">
+          <div class="card-header"><span class="card-title">Today's Plan</span></div>
+          <div class="timeline-item"><div class="timeline-dot" style="background:var(--success);"></div><div><div style="font-size:14px;font-weight:500;">Math: Linear Equations</div><div style="font-size:12px;color:var(--text-muted);">30 min · Completed ✓</div></div></div>
+          <div class="timeline-item"><div class="timeline-dot" style="background:var(--accent);"></div><div><div style="font-size:14px;font-weight:500;">Reading: Evidence-Based</div><div style="font-size:12px;color:var(--text-muted);">45 min · Up next</div></div></div>
+          <div class="timeline-item"><div class="timeline-dot" style="background:var(--border-dark);"></div><div><div style="font-size:14px;font-weight:500;">Writing: Punctuation Rules</div><div style="font-size:12px;color:var(--text-muted);">20 min · Later today</div></div></div>
+          ${satInfo}
+          <button class="btn btn-primary" style="width:100%;margin-top:12px;" onclick="showPage('practice')">Start Practice Session →</button>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Needs Attention</span></div>
+          <div class="alert alert-warning"><span>⚠</span><div><strong>Algebra: Quadratics</strong><br>41% accuracy in last 3 tests. Sessions added.</div></div>
+          <div class="alert alert-warning"><span>⚠</span><div><strong>Reading: Main Idea</strong><br>Below average. 3 sessions scheduled.</div></div>
+          <div class="alert alert-success"><span>✓</span><div><strong>Data Analysis</strong><br>Improved 22% — keep it up!</div></div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+function formatSATDate(d){
+  if(!d)return'';
+  const dt=new Date(d+'T12:00:00');
+  return dt.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+}
+function daysUntilSAT(d){
+  if(!d)return'?';
+  const today=new Date();today.setHours(0,0,0,0);
+  const sat=new Date(d+'T00:00:00');
+  return Math.max(0,Math.ceil((sat-today)/(1000*60*60*24)));
+}
+
+// ========================
+// PRACTICE LIST
+// ========================
+function renderPracticeList(){
+  document.getElementById('page-practice').innerHTML=`<div class="container">
+    <div class="test-hero"><h2>Practice Tests</h2><p>Full adaptive Digital SAT experience — same format, timing, and difficulty as the real test.</p>
+      <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;">
+        <span style="background:rgba(255,255,255,.15);padding:6px 14px;border-radius:99px;font-size:13px;">📖 R&W: 2 modules × 27 Qs × 32 min</span>
+        <span style="background:rgba(255,255,255,.15);padding:6px 14px;border-radius:99px;font-size:13px;">📐 Math: 2 modules × 22 Qs × 35 min</span>
+        <span style="background:rgba(255,255,255,.15);padding:6px 14px;border-radius:99px;font-size:13px;">🔄 Adaptive: Module 2 adjusts to your Module 1 score</span>
+      </div>
+    </div>
+    <div class="two-col" style="margin-bottom:24px;">
+      <div class="card" style="border-left:3px solid var(--accent);">
+        <div class="card-title" style="margin-bottom:14px;">📋 Official SAT Test Structure</div>
+        <div class="section-info-box" style="border-color:#bfdbfe;background:var(--accent-bg);">
+          <div style="font-size:15px;font-weight:600;color:var(--accent);margin-bottom:10px;">📖 Reading and Writing</div>
+          <div class="section-rule"><span>📋</span><span><strong>54 questions</strong> · 2 modules of 27 each</span></div>
+          <div class="section-rule"><span>⏱</span><span><strong>64 minutes</strong> · 32 min per module</span></div>
+          <div class="section-rule"><span>📌</span><span>Craft & Structure · Information & Ideas</span></div>
+          <div class="section-rule"><span>📌</span><span>Standard English Conventions (grammar)</span></div>
+          <div class="section-rule"><span>📝</span><span>Shorter passages, one question each</span></div>
+        </div>
+        <div style="text-align:center;padding:10px;background:var(--warning-bg);border-radius:var(--radius);margin-bottom:12px;font-size:13px;color:var(--warning);font-weight:500;">☕ 10-Minute Break between sections</div>
+        <div class="section-info-box" style="border-color:#c4b5fd;background:var(--purple-bg);">
+          <div style="font-size:15px;font-weight:600;color:var(--purple);margin-bottom:10px;">📐 Math</div>
+          <div class="section-rule"><span>📋</span><span><strong>44 questions</strong> · 2 modules of 22 each</span></div>
+          <div class="section-rule"><span>⏱</span><span><strong>70 minutes</strong> · 35 min per module</span></div>
+          <div class="section-rule"><span>📌</span><span>Algebra · Advanced Math · Problem Solving</span></div>
+          <div class="section-rule"><span>🧮</span><span>Desmos calculator available throughout</span></div>
+        </div>
+        <div class="alert alert-info" style="margin-top:8px;">
+          <span>🔄</span><div><strong>Adaptive Scoring:</strong> Strong Module 1 → Hard Module 2 (up to 1600). Weak Module 1 → Easier Module 2 (max ~700). Aim for every question!</div>
+        </div>
+      </div>
+      <div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+          <div class="card metric" style="padding:14px;border-left:3px solid var(--accent);"><div class="metric-val" style="color:var(--accent);font-size:24px;">8</div><div class="metric-label">Full Tests</div></div>
+          <div class="card metric" style="padding:14px;border-left:3px solid var(--success);"><div class="metric-val" style="color:var(--success);font-size:24px;">12</div><div class="metric-label">Completed</div></div>
+          <div class="card metric" style="padding:14px;border-left:3px solid var(--purple);"><div class="metric-val" style="color:var(--purple);font-size:24px;">74%</div><div class="metric-label">Avg Accuracy</div></div>
+          <div class="card metric" style="padding:14px;border-left:3px solid var(--warning);"><div class="metric-val" style="color:var(--warning);font-size:24px;">1320</div><div class="metric-label">Best Score</div></div>
+        </div>
+        <div class="card" style="background:var(--purple-bg);border-color:#c4b5fd;">
+          <div style="font-size:14px;font-weight:500;color:var(--purple);margin-bottom:6px;">🧮 Desmos Graphing Calculator</div>
+          <div style="font-size:13px;color:var(--text-muted);margin-bottom:10px;">Available on all Math modules — just like the real Digital SAT.</div>
+          <button class="btn btn-calc" onclick="toggleCalc()">Open Desmos Calculator</button>
+        </div>
+      </div>
+    </div>
+    <div class="section-title" style="margin-bottom:16px;">Choose a Test</div>
+    <div class="test-cards">
+      <div class="card test-card" onclick="startTest('full')">
+        <div class="test-type">⭐ Full Adaptive Test</div>
+        <div class="test-name">Digital SAT Practice #4</div>
+        <div style="margin-bottom:12px;"><span class="badge badge-blue">R&W · 54 Q</span> <span class="badge badge-purple">Math · 44 Q</span></div>
+        <div class="test-meta"><span>📋 98 questions</span><span>⏱ 2h 14m</span></div>
+        <div style="margin-top:8px;font-size:12px;color:var(--text-muted);">Includes 10-min break • Adaptive Module 2</div>
+      </div>
+      <div class="card test-card" onclick="startTest('rw')">
+        <div class="test-type">Section Drill</div>
+        <div class="test-name">Reading & Writing Only</div>
+        <div style="margin-bottom:12px;"><span class="badge badge-blue">R&W Only</span></div>
+        <div class="test-meta"><span>📋 54 questions</span><span>⏱ 64 min</span></div>
+      </div>
+      <div class="card test-card" onclick="startTest('math')">
+        <div class="test-type">Section Drill</div>
+        <div class="test-name">Math Section Only</div>
+        <div style="margin-bottom:12px;"><span class="badge badge-purple">Math Only</span></div>
+        <div class="test-meta"><span>📋 44 questions</span><span>⏱ 70 min</span></div>
+      </div>
+      <div class="card test-card" onclick="startTest('algebra')">
+        <div class="test-type">Topic Drill</div>
+        <div class="test-name">Algebra Focus</div>
+        <div style="margin-bottom:12px;"><span class="badge badge-purple">Math</span></div>
+        <div class="test-meta"><span>📋 10 questions</span><span>⏱ 20 min</span></div>
+      </div>
+      <div class="card test-card" onclick="startTest('grammar')">
+        <div class="test-type">Topic Drill</div>
+        <div class="test-name">Grammar & Conventions</div>
+        <div style="margin-bottom:12px;"><span class="badge badge-blue">R&W</span></div>
+        <div class="test-meta"><span>📋 12 questions</span><span>⏱ 15 min</span></div>
+      </div>
+      <div class="card test-card" onclick="startTest('geometry')">
+        <div class="test-type">Topic Drill</div>
+        <div class="test-name">Geometry & Trig</div>
+        <div style="margin-bottom:12px;"><span class="badge badge-purple">Math</span></div>
+        <div class="test-meta"><span>📋 8 questions</span><span>⏱ 20 min</span></div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ========================
+// TEST ENGINE
+// ========================
+function getQs(type){
+  if(type==='full') return [...RWQ_M1,...RWQ_M2_HARD,...MATHQ_M1,...MATHQ_M2_HARD];
+  if(type==='rw') return [...RWQ_M1,...RWQ_M2_HARD];
+  if(type==='math') return [...MATHQ_M1,...MATHQ_M2_HARD];
+  if(type==='algebra') return MATHQ_M1.filter(q=>q.skill==='Algebra').slice(0,10);
+  if(type==='grammar') return RWQ_M1.filter(q=>q.skill==='Standard English Conventions').slice(0,12);
+  if(type==='geometry') return MATHQ_M1.filter(q=>q.skill==='Geometry & Trig').concat(MATHQ_M2_HARD.filter(q=>q.skill==='Geometry & Trig')).slice(0,8);
+  return MATHQ_M1.slice(0,4);
+}
+function getLabel(t){return{full:'Digital SAT Practice #4',rw:'Reading & Writing',math:'Math Section',algebra:'Algebra Focus',grammar:'Grammar & Conventions',geometry:'Geometry & Trig'}[t]||'Practice Test';}
+
+// Module timing: RW M1=1920s(32min), RW M2=1920s, Math M1=2100s(35min), Math M2=2100s
+function getModuleTiming(qs,mod1Count,idx){
+  // Returns seconds for current module
+  if(idx<mod1Count){
+    const sec=qs[0]&&qs[0].sec==='rw'?1920:2100;
+    return sec;
+  }else{
+    const sec=qs[idx]&&qs[idx].sec==='rw'?1920:2100;
+    return sec;
+  }
+}
+
+function startTest(type){
+  const allQs=getQs(type);
+  // Determine adaptive M2 (full test only)
+  TS={
+    type,
+    qs:allQs,
+    label:getLabel(type),
+    answers:new Array(allQs.length).fill(null),
+    sprAnswers:new Array(allQs.length).fill(''),
+    currentQ:0,
+    breakDone:false,
+    breakInterval:null,
+    breakSecs:600,
+    adaptiveM2Selected:false,
+    m1Score:0,
+    timerSecs:0,
+    timerMax:0,
+    moduleStart:0,
+  };
+  // Set initial timer for first module
+  const firstSec=allQs[0]&&allQs[0].sec==='rw'?1920:2100;
+  TS.timerSecs=firstSec;
+  TS.timerMax=firstSec;
+  TS.moduleStart=0;
+  renderActiveTest();
+  startTimer();
+}
+
+function getModuleBoundary(){
+  // Returns index where module 2 starts for current section
+  const qs=TS.qs;
+  if(TS.type==='full'){
+    // RW M1: 27, RW M2: 27, Math M1: 22, Math M2: 22
+    return 27; // RW boundary
+  }
+  if(TS.type==='rw') return 27;
+  if(TS.type==='math') return 22;
+  return Math.floor(qs.length/2);
+}
+
+function getCurrentModuleLabel(){
+  const q=TS.qs[TS.currentQ];
+  if(!q) return '';
+  const sec=q.sec==='rw'?'Reading & Writing':'Math';
+  return `${sec} — Module ${q.mod}`;
+}
+
+function startTimer(){
+  clearInterval(TIMER_INT);
+  updateTimerDisplay();
+  TIMER_INT=setInterval(()=>{
+    TS.timerSecs--;
+    if(TS.timerSecs<=0){
+      TS.timerSecs=0;
+      updateTimerDisplay();
+      clearInterval(TIMER_INT);
+      // Auto advance module
+      autoAdvanceModule();
+    }else{
+      updateTimerDisplay();
+    }
+  },1000);
+}
+function stopTimer(){clearInterval(TIMER_INT);}
+function updateTimerDisplay(){
+  const el=document.getElementById('live-timer');
+  if(!el)return;
+  const m=Math.floor(TS.timerSecs/60);
+  const s=TS.timerSecs%60;
+  el.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  el.className='timer-display'+(TS.timerSecs<=300&&TS.timerSecs>60?' warn':TS.timerSecs<=60?' danger':'');
+}
+function autoAdvanceModule(){
+  // Time ran out — move to next section
+  const qs=TS.qs;
+  const rwBound=TS.type==='full'?27:TS.type==='rw'?27:null;
+  const mathBound=TS.type==='full'?27+27+22:TS.type==='math'?22:null;
+
+  if(TS.type==='full'&&TS.currentQ<27&&!TS.breakDone){
+    // Move to break
+    renderBreak();
+  } else {
+    // Move to results
+    renderResults();
+  }
+}
+
+function resetTimerForModule(secs){
+  TS.timerSecs=secs;
+  TS.timerMax=secs;
+  startTimer();
+}
+
+function selectiveM2(){
+  // Calculate M1 score for adaptive purposes
+  const rwM1Qs=TS.qs.filter(q=>q.sec==='rw'&&q.mod===1);
+  const mathM1Qs=TS.qs.filter(q=>q.sec==='math'&&q.mod===1);
+  
+  // Count correct in M1 (rough)
+  let rwCorrect=0,mathCorrect=0;
+  TS.qs.forEach((q,i)=>{
+    if(q.mod!==1)return;
+    if(q.type==='spr'){if(TS.sprAnswers[i]&&TS.sprAnswers[i].toString().trim()===q.ans.toString())if(q.sec==='rw')rwCorrect++;else mathCorrect++;}
+    else{if(TS.answers[i]===q.ans)if(q.sec==='rw')rwCorrect++;else mathCorrect++;}
+  });
+  const rwPct=rwM1Qs.length?rwCorrect/rwM1Qs.length:0;
+  const mathPct=mathM1Qs.length?mathCorrect/mathM1Qs.length:0;
+  return{hard:rwPct>0.6&&mathPct>0.6,rwHard:rwPct>0.6,mathHard:mathPct>0.6,rwPct,mathPct};
+}
+
+function renderActiveTest(){
+  const qs=TS.qs;
+  const total=qs.length;
+  const ci=TS.currentQ;
+  const q=qs[ci];
+
+  // Check if we need break (full test, after RW M2, before Math M1)
+  if(TS.type==='full'&&!TS.breakDone&&ci===54){
+    renderBreak();return;
+  }
+
+  // Build question map
+  const qMap=qs.map((_,i)=>{
+    const done=TS.answers[i]!==null||(qs[i].type==='spr'&&TS.sprAnswers[i]!=='');
+    let bg=done?'var(--accent)':'var(--border)';
+    if(i===ci)bg='var(--text)';
+    return`<div onclick="jumpQ(${i})" class="q-nav-btn" style="background:${bg};color:${done||i===ci?'white':'var(--text-muted)'};font-size:11px;">${i+1}</div>`;
+  }).join('');
+
+  const passage=q&&q.pass?`<div class="q-passage">${q.pass}</div>`:'';
+  let ansArea='';
+  if(q){
+    if(q.type==='spr'){
+      ansArea=`<div style="font-size:13px;color:var(--text-muted);margin-bottom:6px;">Student-produced response — enter your answer below:</div><input class="spr-input" type="text" placeholder="Enter your answer..." value="${TS.sprAnswers[ci]||''}" oninput="setSPR(this.value)">`;
+    }else{
+      ansArea=`<div class="answer-opts">${q.opts.map((o,i)=>`<div class="answer-opt ${TS.answers[ci]===i?'selected':''}" onclick="selectAns(${i})"><div class="opt-letter">${'ABCD'[i]}</div><div>${o}</div></div>`).join('')}</div>`;
+    }
+  }
+  const isMath=q&&q.sec==='math';
+  const secBadge=q?`<span class="badge ${q.sec==='rw'?'badge-blue':'badge-purple'}">${q.sec==='rw'?'📖 Reading & Writing':'📐 Math'} — Module ${q.mod}</span>`:'';
+  const skillBadge=q?`<span class="badge badge-orange" style="margin-left:6px;">${q.skill}</span>`:'';
+  const calcBtn=isMath?`<button class="btn btn-calc" onclick="toggleCalc()" style="font-size:13px;padding:8px 14px;">🧮 Calculator</button>`:'<div></div>';
+  const refBtn=isMath?`<button class="btn" onclick="document.getElementById('ref-modal').style.display='flex'" style="font-size:12px;padding:6px 12px;">📐 Reference</button>`:'';
+
+  const answered=TS.answers.filter((a,i)=>a!==null||(qs[i].type==='spr'&&TS.sprAnswers[i]!=='')).length;
+
+  document.getElementById('page-practice').innerHTML=`
+    <div class="test-topbar">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        ${secBadge}${skillBadge}
+        <span style="font-size:12px;color:var(--text-muted);">Q ${ci+1} of ${total}</span>
+        <span style="font-size:12px;color:var(--text-muted);">${answered} answered</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        ${refBtn}
+        <div>
+          <div style="font-size:10px;color:var(--text-muted);text-align:center;margin-bottom:2px;">${getCurrentModuleLabel()}</div>
+          <div id="live-timer" class="timer-display">--:--</div>
+        </div>
+        ${calcBtn}
+        <button class="btn" onclick="renderPracticeList()" style="font-size:12px;padding:6px 12px;">✕ Exit</button>
+      </div>
+    </div>
+    <div class="container" style="max-width:780px;">
+      <div class="q-progress"><div class="q-progress-fill" style="width:${((ci+1)/total)*100}%;"></div></div>
+      ${passage}
+      <div class="q-text">${q?q.q:''}</div>
+      ${ansArea}
+      <div class="q-actions">
+        <button class="btn" onclick="prevQ()" ${ci===0?'disabled':''}>← Back</button>
+        <div style="display:flex;gap:8px;">
+          ${ci<total-1?`<button class="btn btn-primary" onclick="nextQ()">Next →</button>`:`<button class="btn btn-primary" onclick="renderResults()">Submit Test →</button>`}
+        </div>
+      </div>
+      <div style="margin-top:24px;">
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;font-weight:500;">QUESTION NAVIGATOR</div>
+        <div class="q-nav-grid">${qMap}</div>
+      </div>
+    </div>`;
+  updateTimerDisplay();
+}
+
+function selectAns(i){
+  TS.answers[TS.currentQ]=i;
+  renderActiveTest();
+}
+function setSPR(v){
+  TS.sprAnswers[TS.currentQ]=v;
+}
+function jumpQ(i){TS.currentQ=i;renderActiveTest();}
+function nextQ(){
+  const ci=TS.currentQ;
+  const qs=TS.qs;
+  
+  // Check for section transition and timer reset
+  if(TS.type==='full'){
+    // After RW M1 (Q0-26 → Q27), reset timer for RW M2
+    if(ci===26){resetTimerForModule(1920);}
+    // After RW M2 (Q27-53 → Q54), show break
+    if(ci===53){renderBreak();return;}
+    // After Math M1 (Q54-75 → Q76), reset timer for Math M2
+    if(ci===75){resetTimerForModule(2100);}
+  } else if(TS.type==='rw'){
+    if(ci===26){resetTimerForModule(1920);}
+  } else if(TS.type==='math'){
+    if(ci===21){resetTimerForModule(2100);}
+  }
+
+  if(ci<qs.length-1){TS.currentQ++;renderActiveTest();}
+  else renderResults();
+}
+function prevQ(){if(TS.currentQ>0){TS.currentQ--;renderActiveTest();}}
+
+function renderBreak(){
+  stopTimer();
+  TS.breakSecs=600;
+  document.getElementById('page-practice').innerHTML=`
+    <div class="container" style="display:flex;justify-content:center;">
+      <div class="break-screen">
+        <div style="font-size:48px;margin-bottom:16px;">☕</div>
+        <h2 style="font-family:'DM Serif Display',serif;font-size:28px;margin-bottom:8px;">10-Minute Break</h2>
+        <p style="color:rgba(255,255,255,.7);margin-bottom:8px;">Reading & Writing section complete.<br>Math begins after your break.</p>
+        <div class="break-timer" id="break-timer">10:00</div>
+        <p style="font-size:13px;color:rgba(255,255,255,.5);margin-bottom:20px;">Stretch, hydrate, and rest your eyes.</p>
+        <button class="btn btn-primary" onclick="endBreak()">Skip Break → Start Math</button>
+      </div>
+    </div>`;
+  TS.breakInterval=setInterval(()=>{
+    TS.breakSecs--;
+    const el=document.getElementById('break-timer');
+    if(el){
+      const m=Math.floor(TS.breakSecs/60);
+      const s=TS.breakSecs%60;
+      el.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    }
+    if(TS.breakSecs<=0){clearInterval(TS.breakInterval);endBreak();}
+  },1000);
+}
+function endBreak(){
+  clearInterval(TS.breakInterval);
+  TS.breakDone=true;
+  // Adaptive: determine which Math M2 to use
+  const adaptive=selectiveM2();
+  if(TS.type==='full'){
+    const mathM2=adaptive.mathHard?MATHQ_M2_HARD:MATHQ_M2_EASY;
+    TS.qs=[...RWQ_M1,...RWQ_M2_HARD,...MATHQ_M1,...mathM2];
+    TS.answers=new Array(TS.qs.length).fill(null);
+    TS.sprAnswers=new Array(TS.qs.length).fill('');
+    TS.currentQ=54; // Start at Math M1
+  }
+  resetTimerForModule(2100);
+  renderActiveTest();
+}
+
+function renderResults(){
+  stopTimer();
+  const qs=TS.qs;
+  let correct=0,total=qs.length;
+  let rwCorrect=0,rwTotal=0,mathCorrect=0,mathTotal=0;
+  let expLines='';
+  qs.forEach((q,i)=>{
+    const isCorrect=q.type==='spr'?(TS.sprAnswers[i]&&TS.sprAnswers[i].toString().trim().toLowerCase()===q.ans.toString().toLowerCase()):TS.answers[i]===q.ans;
+    if(isCorrect)correct++;
+    if(q.sec==='rw'){rwTotal++;if(isCorrect)rwCorrect++;}
+    else{mathTotal++;if(isCorrect)mathCorrect++;}
+  });
+  const pct=Math.round((correct/total)*100);
+  const rwPct=rwTotal?Math.round((rwCorrect/rwTotal)*100):0;
+  const mathPct=mathTotal?Math.round((mathCorrect/mathTotal)*100):0;
+  // Estimate SAT score: 400-1600 scale
+  const estScore=Math.round(400+((correct/total)*1200/10)*10);
+  const adaptive=selectiveM2?selectiveM2():{hard:pct>60};
+  const adaptiveMsg=TS.type==='full'?(adaptive.hard?'<div class="alert alert-success"><span>🏆</span><div><strong>Hard Module 2 Unlocked!</strong> Your strong Module 1 performance granted access to the harder (high-scoring) Module 2. You\'re on track for 1400+!</div></div>':'<div class="alert alert-warning"><span>⚠</span><div><strong>Easier Module 2 Assigned.</strong> Your Module 1 score directed you to the standard Module 2. To reach higher scores, aim for 80%+ accuracy in Module 1 next time.</div></div>'):'';
+  const ci=Math.round((correct/total)*251);
+  const stroke=251-ci;
+  const color=pct>=80?'#22c55e':pct>=60?'#f59e0b':'#ef4444';
+
+  // Build review table (first 10)
+  const reviewRows=qs.slice(0,Math.min(10,qs.length)).map((q,i)=>{
+    const isCorrect=q.type==='spr'?(TS.sprAnswers[i]&&TS.sprAnswers[i].toString().trim().toLowerCase()===q.ans.toString().toLowerCase()):TS.answers[i]===q.ans;
+    const userAns=q.type==='spr'?TS.sprAnswers[i]||'—':(TS.answers[i]!==null?'ABCD'[TS.answers[i]]:'—');
+    const corrAns=q.type==='spr'?q.ans:'ABCD'[q.ans];
+    return`<div style="padding:10px;border:1px solid ${isCorrect?'#86efac':'#fca5a5'};background:${isCorrect?'var(--success-bg)':'var(--danger-bg)'};border-radius:var(--radius);margin-bottom:8px;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+        <span style="font-size:13px;font-weight:500;">Q${i+1}: ${q.skill}</span>
+        <span style="font-size:12px;">${isCorrect?'✅ Correct':'❌ Wrong'} (You: ${userAns}, Ans: ${corrAns})</span>
+      </div>
+      <div style="font-size:12px;color:var(--text-muted);">${q.exp}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('page-practice').innerHTML=`<div class="container">
+    <div style="text-align:center;margin-bottom:32px;">
+      <div style="font-family:'DM Serif Display',serif;font-size:24px;margin-bottom:8px;">${TS.label} — Results</div>
+      <div class="score-ring">
+        <svg width="120" height="120" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="40" fill="none" stroke="var(--border)" stroke-width="10"/>
+          <circle cx="60" cy="60" r="40" fill="none" stroke="${color}" stroke-width="10" stroke-dasharray="251" stroke-dashoffset="${stroke}" stroke-linecap="round"/>
+        </svg>
+        <div class="score-num"><div style="font-size:26px;font-weight:700;">${pct}%</div><div style="font-size:11px;color:var(--text-muted);">${correct}/${total}</div></div>
+      </div>
+      ${TS.type==='full'?`<div style="font-size:32px;font-weight:700;color:var(--accent);margin-bottom:4px;">Est. Score: ${estScore}</div><div style="font-size:14px;color:var(--text-muted);">Based on accuracy — real score uses scaled scoring</div>`:''}
+    </div>
+    ${adaptiveMsg}
+    <div class="three-col" style="margin-bottom:24px;">
+      <div class="card metric"><div class="metric-val" style="color:var(--accent);">${correct}</div><div class="metric-label">Correct</div></div>
+      ${rwTotal?`<div class="card metric"><div class="metric-val" style="color:${rwPct>=70?'var(--success)':'var(--danger)'};">${rwPct}%</div><div class="metric-label">R&W Accuracy</div></div>`:''}
+      ${mathTotal?`<div class="card metric"><div class="metric-val" style="color:${mathPct>=70?'var(--success)':'var(--danger)'};">${mathPct}%</div><div class="metric-label">Math Accuracy</div></div>`:''}
+    </div>
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-header"><span class="card-title">Answer Review (first 10 questions)</span></div>
+      ${reviewRows}
+    </div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+      <button class="btn btn-primary" onclick="startTest('${TS.type}')">Retake Test</button>
+      <button class="btn" onclick="renderPracticeList()">← All Tests</button>
+      <button class="btn" onclick="showPage('calendar')">📅 View Study Plan</button>
+    </div>
+  </div>`;
+}
+
+// ========================
+// CALENDAR
+// ========================
+const MNS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+function getSATDateForUser(){
+  return userSATDate||CU.satDate||null;
+}
+
+function renderCalendar(){
+  const today=new Date();
+  const todayDate=today.getDate();
+  const todayMonth=today.getMonth();
+  const todayYear=today.getFullYear();
+
+  const first=new Date(calYear,calMonth,1).getDay();
+  const dim=new Date(calYear,calMonth+1,0).getDate();
+
+  // Parse SAT date
+  const satDate=getSATDateForUser();
+  let satDay=null,satMonth2=null,satYear2=null;
+  if(satDate){
+    const sp=satDate.split('-');
+    satYear2=parseInt(sp[0]);satMonth2=parseInt(sp[1])-1;satDay=parseInt(sp[2]);
+  }
+
+  let cells='';
+  for(let i=0;i<first;i++)cells+=`<div class="cal-day other-month"></div>`;
+  for(let d=1;d<=dim;d++){
+    const isToday=d===todayDate&&calMonth===todayMonth&&calYear===todayYear;
+    const isSAT=satDay&&d===satDay&&calMonth===satMonth2&&calYear===satYear2;
+    const tasks=BASE_CAL_TASKS[d];
+    let cls='cal-day';
+    if(isSAT){cls+=' sat-deadline';}
+    else if(isToday)cls+=' today';
+    else if(tasks){
+      const t=tasks[0];
+      if(t.type==='test')cls+=' test-day';
+      else if(t.type==='focus')cls+=' focus-day';
+      else cls+=' study-day';
+    }
+    const dot=tasks&&!isToday&&!isSAT?`<div class="task-dot"></div>`:'';
+    const label=isSAT?`<span style="font-size:10px;">SAT</span>`:'';
+    cells+=`<div class="${cls}" onclick="${isSAT?'openSATModal()':'openModal('+d+')'}">
+      ${d}${label}${dot}
+    </div>`;
+  }
+  const rem=42-(first+dim);
+  for(let d=1;d<=rem;d++)cells+=`<div class="cal-day other-month">${d}</div>`;
+
+  // Upcoming sessions
+  const upcomingDays=Object.entries(BASE_CAL_TASKS).filter(([d])=>parseInt(d)>=todayDate).slice(0,6);
+  const tc={focus:'badge-orange',review:'badge-green',test:'badge-red'};
+  const sched=upcomingDays.flatMap(([d,tasks])=>tasks.map(t=>({...t,day:d}))).map(t=>`
+    <div class="card card-sm" style="margin-bottom:8px;display:flex;align-items:center;gap:12px;cursor:pointer;" onclick="openModal(${t.day})">
+      <div style="font-size:20px;">${t.icon}</div>
+      <div style="flex:1;"><div style="font-size:11px;color:var(--text-muted);">Mar ${t.day}</div><div style="font-size:13px;font-weight:500;">${t.title}</div></div>
+      <span class="badge ${tc[t.type]||'badge-blue'}">${t.type}</span>
+    </div>`).join('');
+
+  // Task tracker (Google Tasks style)
+  const allTasks=Object.entries(BASE_CAL_TASKS).flatMap(([d,tasks])=>tasks.map((t,i)=>({...t,day:d,id:`${d}_${i}`})));
+  const trackerHTML=allTasks.slice(0,10).map(t=>{
+    const done=taskChecked[t.id]||false;
+    return`<div class="task-tracker-item ${done?'done':''}" onclick="toggleTask('${t.id}')">
+      <div class="task-check">${done?'✓':''}</div>
+      <div style="flex:1;">
+        <div class="task-text">${t.title}</div>
+        <div class="task-due">Mar ${t.day} · ${t.dur}</div>
+      </div>
+      <span class="badge ${tc[t.type]||'badge-blue'}" style="font-size:10px;">${t.type}</span>
+    </div>`;
+  }).join('');
+
+  document.getElementById('page-calendar').innerHTML=`<div class="container">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+      <div><div class="section-title">${MNS[calMonth]} ${calYear}</div>
+        ${satDate?`<div style="font-size:13px;color:var(--danger);font-weight:500;">📅 SAT Date: ${formatSATDate(satDate)}</div>`:''}
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn" onclick="chMo(-1)" style="padding:6px 12px;font-size:13px;">‹</button>
+        <button class="btn" onclick="chMo(1)" style="padding:6px 12px;font-size:13px;">›</button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 300px;gap:20px;">
+      <div>
+        <div class="card" style="padding:16px;margin-bottom:16px;">
+          <div class="cal-grid" style="margin-bottom:8px;">${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d=>`<div class="cal-header">${d}</div>`).join('')}</div>
+          <div class="cal-grid">${cells}</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;font-size:11px;color:var(--text-muted);">
+            <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;border-radius:3px;background:var(--accent);display:inline-block;"></span>Today</span>
+            <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;border-radius:3px;background:#fef3c7;border:1px solid #fbbf24;display:inline-block;"></span>Focus</span>
+            <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;border-radius:3px;background:var(--danger-bg);border:1px solid #fca5a5;display:inline-block;"></span>Practice test</span>
+            <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;border-radius:3px;background:var(--success-bg);border:1px solid #86efac;display:inline-block;"></span>Review</span>
+            <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;border-radius:3px;background:#dc2626;display:inline-block;"></span>📅 SAT Deadline</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Upcoming Sessions</span></div>
+          ${sched}
+        </div>
+      </div>
+      <div>
+        <div class="card" style="margin-bottom:14px;">
+          <div class="card-header"><span class="card-title">📋 Task Tracker</span><span style="font-size:11px;color:var(--success);">${Object.values(taskChecked).filter(Boolean).length} done</span></div>
+          <div class="task-tracker">${trackerHTML}</div>
+        </div>
+        ${satDate?`<div class="card" style="background:var(--danger-bg);border-color:#fca5a5;">
+          <div style="font-size:14px;font-weight:600;color:var(--danger);margin-bottom:4px;">🎯 SAT Countdown</div>
+          <div style="font-size:28px;font-weight:700;color:var(--danger);">${daysUntilSAT(satDate)} days</div>
+          <div style="font-size:12px;color:var(--text-muted);">${formatSATDate(satDate)}</div>
+        </div>`:''}
+      </div>
+    </div>
+  </div>`;
+}
+
+function toggleTask(id){
+  taskChecked[id]=!taskChecked[id];
+  renderCalendar();
+}
+
+function chMo(d){calMonth+=d;if(calMonth>11){calMonth=0;calYear++;}if(calMonth<0){calMonth=11;calYear--;}renderCalendar();}
+
+function openModal(day){
+  const tasks=BASE_CAL_TASKS[day];
+  document.getElementById('task-modal-date').textContent=`${MNS[calMonth]} ${day}, ${calYear}`;
+  if(!tasks||!tasks.length){
+    document.getElementById('task-modal-body').innerHTML=`<div style="text-align:center;padding:20px;color:var(--text-muted);">No sessions scheduled. Rest up! 😴</div>`;
+  }else{
+    const tc2={focus:'var(--warning-bg)',review:'var(--success-bg)',test:'var(--danger-bg)'};
+    const tt2={focus:'var(--warning)',review:'var(--success)',test:'var(--danger)'};
+    const typeLabel={focus:'Focus Session',review:'Review Session',test:'Practice Test'};
+    document.getElementById('task-modal-body').innerHTML=tasks.map(t=>`
+      <div class="task-item" onclick="launchTask('${t.section}','${t.type}')" style="background:${tc2[t.type]||'var(--bg)'};border-color:${tt2[t.type]||'var(--border)'};">
+        <div class="task-type-icon" style="background:white;font-size:20px;">${t.icon}</div>
+        <div style="flex:1;"><div style="font-size:14px;font-weight:500;">${t.title}</div><div style="font-size:12px;color:var(--text-muted);">${typeLabel[t.type]} · ${t.dur}</div></div>
+        <div style="color:${tt2[t.type]||'var(--text-muted)'};font-size:18px;">→</div>
+      </div>`).join('');
+  }
+  document.getElementById('task-modal').style.display='flex';
+}
+
+function openSATModal(){
+  document.getElementById('task-modal').style.display='none';
+  document.getElementById('congrats-modal').style.display='flex';
+}
+
+function launchTask(section,type){
+  document.getElementById('task-modal').style.display='none';
+  if(type==='test'||section==='full')startTest('full');
+  else if(section==='math')startTest('math');
+  else if(section==='rw')startTest('rw');
+  else if(section==='grammar')startTest('grammar');
+  else if(section==='geometry')startTest('geometry');
+  else startTest('rw');
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-practice').classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.toggle('active',t.textContent.toLowerCase().includes('practice')));
+}
+function closeModalOutside(e){if(e.target===document.getElementById('task-modal'))document.getElementById('task-modal').style.display='none';}
+
+// ========================
+// PROGRESS
+// ========================
+function renderProgress(){
+  const s=STUDENTS.find(x=>x.email===CU.email)||STUDENTS[0];
+  const months=['Sep','Oct','Nov','Dec','Jan','Feb','Mar'];
+  const bars=s.hist.map((v,i)=>{const h=Math.round(((v-1050)/400)*80)+10;return`<div class="bar-item"><div style="font-size:10px;font-weight:500;">${v}</div><div class="bar" style="height:${h}px;background:${i===s.hist.length-1?'var(--accent)':'#bfdbfe'};"></div><div style="font-size:10px;color:var(--text-muted);">${months[i]}</div></div>`;}).join('');
+  document.getElementById('page-progress').innerHTML=`<div class="container">
+    <div class="section-title">My Progress</div><div class="section-sub">Your improvement across all subjects and skills.</div>
+    <div class="four-col" style="margin-bottom:20px;">
+      <div class="card metric"><div class="metric-val" style="color:var(--accent);">${s.current}</div><div class="metric-label">Current Score</div></div>
+      <div class="card metric"><div class="metric-val">${s.target}</div><div class="metric-label">Target Score</div></div>
+      <div class="card metric"><div class="metric-val" style="color:var(--success);">${s.streak}</div><div class="metric-label">Day Streak</div></div>
+      <div class="card metric"><div class="metric-val" style="color:var(--purple);">${s.comp}%</div><div class="metric-label">Completion</div></div>
+    </div>
+    <div class="two-col">
+      <div>
+        <div class="card" style="margin-bottom:16px;"><div class="card-header"><span class="card-title">Score History</span></div><div class="bar-chart">${bars}</div></div>
+        <div class="card"><div class="card-header"><span class="card-title">Subject Scores</span></div>
+          ${[['📐 Math',s.subj.math],['📖 Reading',s.subj.reading],['✍️ Writing',s.subj.writing]].map(([n,p])=>`<div class="breakdown-row"><div class="breakdown-label">${n}</div><div style="flex:1;"><div class="progress-bar"><div class="progress-fill ${p>=75?'fill-green':p>=55?'fill-orange':'fill-red'}" style="width:${p}%;"></div></div></div><div class="breakdown-val">${p}%</div></div>`).join('')}
+        </div>
+      </div>
+      <div>
+        <div class="card" style="margin-bottom:14px;"><div class="card-header"><span class="card-title">Areas to Improve</span></div>${s.weak.map(t=>`<div class="alert alert-warning"><span>⚠</span><div><strong>${t}</strong><br><span style="font-size:12px;">Sessions scheduled this week</span></div></div>`).join('')}</div>
+        <div class="card"><div class="card-header"><span class="card-title">Achievements</span></div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--warning-bg);border-radius:var(--radius);"><span style="font-size:20px;">🔥</span><div><div style="font-size:13px;font-weight:500;">${s.streak}-Day Streak</div><div style="font-size:11px;color:var(--text-muted);">Personal best!</div></div></div>
+            <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--accent-bg);border-radius:var(--radius);"><span style="font-size:20px;">📈</span><div><div style="font-size:13px;font-weight:500;">+${s.change} Points Gained</div><div style="font-size:11px;color:var(--text-muted);">Since you started</div></div></div>
+            <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--success-bg);border-radius:var(--radius);"><span style="font-size:20px;">✅</span><div><div style="font-size:13px;font-weight:500;">${s.tests} Tests Completed</div><div style="font-size:11px;color:var(--text-muted);">Keep going!</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ========================
+// PARENT TRACKER
+// ========================
+function renderTracker(){
+  // Find linked student if parent
+  const linkedEmail=CU.linkedStudent||'alex@scoreup.com';
+  const linkedStudent=STUDENTS.find(s=>s.email===linkedEmail);
+  
+  document.getElementById('page-tracker').innerHTML=`<div class="container">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+      <div class="section-title">Student Tracker</div>
+      ${CU.linkedStudent?`<div class="badge badge-green">Connected to ${linkedStudent?linkedStudent.name:'student'}</div>`:'<button class="btn btn-primary" style="font-size:13px;" onclick="showAddStudentModal()">+ Connect Student</button>'}
+    </div>
+    <div class="section-sub">Full access to your child\'s progress, weak areas, and study activity.</div>
+    <div class="two-col" style="margin-bottom:20px;">
+      <div class="card" style="background:var(--accent-bg);border-color:#bfdbfe;">
+        <div class="card-title" style="color:var(--accent);">Group Summary</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;">
+          <div><div style="font-size:22px;font-weight:700;color:var(--accent);">3</div><div style="font-size:12px;color:var(--text-muted);">Active Students</div></div>
+          <div><div style="font-size:22px;font-weight:700;color:var(--accent);">+68</div><div style="font-size:12px;color:var(--text-muted);">Avg Score Gain</div></div>
+          <div><div style="font-size:22px;font-weight:700;color:var(--success);">87%</div><div style="font-size:12px;color:var(--text-muted);">Session Completion</div></div>
+          <div><div style="font-size:22px;font-weight:700;color:var(--purple);">29</div><div style="font-size:12px;color:var(--text-muted);">Tests This Month</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="margin-bottom:10px;">Recent Alerts</div>
+        <div class="notif"><div class="notif-dot"></div><div style="flex:1;"><div style="font-size:13px;"><strong>Alex J.</strong> completed Practice Test #4 — scored 78%</div><div style="font-size:11px;color:var(--text-muted);">2 hours ago</div></div></div>
+        <div class="notif"><div class="notif-dot" style="background:var(--warning);"></div><div style="flex:1;"><div style="font-size:13px;"><strong>Maya R.</strong> missed 2 sessions this week</div><div style="font-size:11px;color:var(--text-muted);">Yesterday</div></div></div>
+        <div class="notif"><div class="notif-dot" style="background:var(--success);"></div><div style="flex:1;"><div style="font-size:13px;"><strong>Chris L.</strong> hit a new milestone: 1400!</div><div style="font-size:11px;color:var(--text-muted);">2 days ago</div></div></div>
+      </div>
+    </div>
+    <div class="section-title" style="font-size:16px;margin-bottom:14px;">Your Students</div>
+    <div class="card" id="slist">${STUDENTS.map(s=>`
+      <div class="student-card" onclick="showSD(${s.id})">
+        <div class="savatar" style="background:${s.color};color:${s.tc};">${s.initials}</div>
+        <div style="flex:1;">
+          <div class="sname" style="font-size:14px;font-weight:500;">${s.name}</div>
+          <div style="font-size:12px;color:var(--text-muted);">Target: ${s.target} · Streak: ${s.streak} days · ${s.tests} tests</div>
+          <div style="margin-top:6px;"><div class="progress-bar" style="max-width:200px;"><div class="progress-fill ${s.comp>85?'fill-green':'fill-orange'}" style="width:${s.comp}%;"></div></div></div>
+        </div>
+        <div style="text-align:right;"><div style="font-size:20px;font-weight:700;color:var(--accent);">${s.current}</div><div class="delta-up" style="font-size:12px;">+${s.change} pts</div><div style="font-size:11px;color:var(--text-muted);">${Math.round(s.current/s.target*100)}% to goal</div></div>
+      </div>`).join('')}
+    </div>
+    <div id="sdetail" style="display:none;margin-top:20px;"></div>
+  </div>`;
+}
+function showSD(id){
+  const s=STUDENTS.find(x=>x.id===id);
+  const months=['Sep','Oct','Nov','Dec','Jan','Feb','Mar'];
+  const bars=s.hist.map((v,i)=>{const h=Math.round(((v-1050)/400)*80)+10;return`<div class="bar-item"><div style="font-size:10px;font-weight:500;">${v}</div><div class="bar" style="height:${h}px;background:${i===s.hist.length-1?'var(--accent)':'#bfdbfe'};"></div><div style="font-size:10px;color:var(--text-muted);">${months[i]}</div></div>`;}).join('');
+  document.getElementById('slist').style.display='none';
+  document.getElementById('sdetail').style.display='block';
+  document.getElementById('sdetail').innerHTML=`
+    <button class="btn" onclick="closeSD()" style="margin-bottom:20px;">← All Students</button>
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;">
+      <div class="savatar" style="background:${s.color};color:${s.tc};width:52px;height:52px;font-size:18px;">${s.initials}</div>
+      <div><div style="font-size:20px;font-weight:600;">${s.name}</div><div style="font-size:13px;color:var(--text-muted);">Target: ${s.target} · ${s.tests} tests · ${s.streak}-day streak</div></div>
+      <div style="margin-left:auto;text-align:right;"><div style="font-size:28px;font-weight:700;color:var(--accent);">${s.current}</div><div class="delta-up">+${s.change} pts since start</div></div>
+    </div>
+    <div class="four-col" style="margin-bottom:20px;">
+      <div class="card metric"><div class="metric-val" style="color:var(--accent);">${s.current}</div><div class="metric-label">Score</div></div>
+      <div class="card metric"><div class="metric-val" style="color:var(--success);">${s.streak}</div><div class="metric-label">Streak</div></div>
+      <div class="card metric"><div class="metric-val" style="color:var(--purple);">${s.comp}%</div><div class="metric-label">Completion</div></div>
+      <div class="card metric"><div class="metric-val">${s.tests}</div><div class="metric-label">Tests</div></div>
+    </div>
+    <div class="two-col">
+      <div>
+        <div class="card" style="margin-bottom:16px;"><div class="card-header"><span class="card-title">Score History</span></div><div style="display:flex;gap:8px;align-items:flex-end;height:100px;margin:12px 0;">${bars}</div></div>
+        <div class="card"><div class="card-header"><span class="card-title">Subject Scores</span></div>
+          ${[['Math',s.subj.math],['Reading',s.subj.reading],['Writing',s.subj.writing]].map(([n,p])=>`<div class="breakdown-row"><div class="breakdown-label">${n}</div><div style="flex:1;"><div class="progress-bar"><div class="progress-fill ${p>=75?'fill-green':'fill-orange'}" style="width:${p}%;"></div></div></div><div class="breakdown-val">${p}%</div></div>`).join('')}
+        </div>
+      </div>
+      <div>
+        <div class="card" style="margin-bottom:14px;"><div class="card-header"><span class="card-title">Weak Areas</span></div>${s.weak.map(t=>`<div class="alert alert-warning"><span>⚠</span><div><strong>${t}</strong><br><span style="font-size:12px;">Sessions scheduled this week</span></div></div>`).join('')}</div>
+        <div class="card"><div class="card-header"><span class="card-title">Parent Notes</span></div><textarea style="width:100%;border:1px solid var(--border);border-radius:8px;padding:10px;font-family:inherit;font-size:13px;resize:vertical;min-height:80px;background:var(--bg);" placeholder="Add private notes about your student..."></textarea><button class="btn btn-primary" style="width:100%;margin-top:8px;font-size:13px;">Save Notes</button></div>
+      </div>
+    </div>`;
+}
+function closeSD(){
+  document.getElementById('slist').style.display='block';
+  document.getElementById('sdetail').style.display='none';
+}
+</script>
+</body>
+</html>
